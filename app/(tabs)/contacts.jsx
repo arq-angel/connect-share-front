@@ -1,47 +1,43 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView} from "react-native";
-import {SafeAreaView} from 'react-native-safe-area-context'
+import { View, Text, ScrollView } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchBox from "../../components/SearchBox";
 import ContactItem from "../../components/ContactItem";
+import { fetchEmployees } from "../../api/myapplib"; // Ensure this is correct
 
-const contacts = () => {
-    const contactItems = Array(20).fill(0);
+const Contacts = () => {
+    const { data: data, loading, error } = fetchEmployees(); // Destructure data from the custom hook
 
     return (
-        <View className="h-full bg-amber-500">
+        <View className="h-full">
             {/* Contacts header - stays at the top */}
-            <View className="flex flex-row items-start px-3 bg-amber-700">
+            <View className="flex flex-row items-start px-3">
                 <Text className="text-4xl">Contacts</Text>
             </View>
-            <View className="flex flex-row items-start px-2 py-1 bg-yellow-400">
+            <View className="flex flex-row items-start px-2 py-1">
                 <SearchBox />
             </View>
-
 
             {/* ScrollView for All Contacts content */}
             <ScrollView className="flex-1">
                 <View>
-                    {contactItems.map((_, index) => (
-                        <ContactItem key={index} /> // Render ContactItem 20 times
-                    ))}
+                    {loading &&
+                        (
+                            <View className="flex justify-center items-center pt-2">
+                                <Text>Loading...</Text>
+                            </View>
+                        )
+                    }
+                    {error && <Text>Error: {error.message}</Text>}
 
-                    {/* Sample contacts (can be replaced with dynamic content) */}
-                    {/*<Text>Contact 1</Text>
-                    <Text>Contact 2</Text>
-                    <Text>Contact 3</Text>
-                    <Text>Contact 4</Text>
-                    <Text>Contact 5</Text>
-                    <Text>Contact 6</Text>
-                    <Text>Contact 7</Text>
-                    <Text>Contact 8</Text>
-                    <Text>Contact 9</Text>
-                    <Text>Contact 10</Text>*/}
-                    {/* Add more contacts here */}
+                    {/* Render each contact item using the data.requests array */}
+                    {data && data.requests && data.requests.map((employee, index) => (
+                        <ContactItem key={index} employee={employee} />  // Pass each object to ContactItem
+                    ))}
                 </View>
             </ScrollView>
         </View>
     );
 };
 
-
-export default contacts;
+export default Contacts;

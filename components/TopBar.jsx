@@ -5,7 +5,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const TopBar = () => {
     return (
-        <View className="flex-row min-h-[50px] bg-red-400 justify-between items-center px-4">
+        <View className="flex-row min-h-[50px] justify-between items-center px-4">
             {/* Left-aligned View */}
             <View>
                 <Text className="text-blue-500 font-semibold text-xl">Edit</Text>

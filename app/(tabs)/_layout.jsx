@@ -7,7 +7,7 @@ import {SafeAreaView} from "react-native-safe-area-context";
 
 const TabLayout = () => {
     return (
-        <View className="flex-1 bg-yellow-800">
+        <View className="flex-1">
             {/* SafeAreaView only for TopBar */}
             <SafeAreaView edges={['top']} style={{ backgroundColor: 'transparent' }}>
                 <TopBar />
