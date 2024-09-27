@@ -1,9 +1,12 @@
 import React from 'react';
-import {View, Text} from "react-native";
+import {View, Text, TouchableOpacity} from "react-native";
+import {router} from "expo-router";
 
 const ContactItem = ({employee}) => {
     return (
-        <View className="flex flex-row space-x-3 pt-1 px-2 items-center">
+        <TouchableOpacity
+            className="flex flex-row space-x-3 mb-2 mx-2 items-center"
+        >
             {/* Display initials inside a perfect circle */}
             <View style={{ width: 50, height: 50, borderRadius: 25 }} className="bg-gray-300 justify-center items-center">
                 <Text className="text-lg font-bold">
@@ -19,7 +22,7 @@ const ContactItem = ({employee}) => {
 
                 <Text className="text-sm text-gray-600">{`${employee.company}, ${employee.designation}`}</Text>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 
