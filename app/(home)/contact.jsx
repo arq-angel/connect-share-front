@@ -108,12 +108,12 @@ const Contact = () => {
                 className="mx-3 mt-2"
                 onScroll={handleScroll}
                 scrollEventThrottle={16}
-                refreshControl={
+                /*refreshControl={
                     <RefreshControl
                         refreshing={refreshing}
                         onRefresh={onRefresh}
                     />
-                }
+                }*/
             >
                 {/* Show the main loader only during the initial loading and NOT when refreshing */}
                 {loading && !refreshing && (
