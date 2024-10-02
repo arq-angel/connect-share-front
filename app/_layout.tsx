@@ -1,18 +1,19 @@
-import {useEffect, useState} from "react";
-import UserLoggedInProvider from "../context/UserLoggedIn";
-import { Stack, useRouter } from "expo-router";
+import {useContext, useEffect} from "react";
+import UserLoggedInProvider, {UserLoggedInContext} from "../context/UserLoggedIn";
+import PageDetailsProvider from "../context/PageDetails";
+import {Stack, useRouter} from "expo-router";
 
 const InitialLayout = () => {
-    const [userLoggedIn, setUserLoggedIn] = useState(false);
+    const {userLoggedIn} = useContext(UserLoggedInContext);
     const router = useRouter();
 
-    useEffect(() => {
-        setUserLoggedIn(false);
+    console.log("log status", userLoggedIn);
 
+    useEffect(() => {
         if (!userLoggedIn) {
-            router.replace('/login');
+            router.replace('/login'); // Redirect if not logged in
         }
-    }, []);
+    }, [userLoggedIn]);
 
     return (
         <Stack>
@@ -21,6 +22,20 @@ const InitialLayout = () => {
                 options={{
                     headerShown: true,
                     title: 'Login',
+                }}
+            />
+            <Stack.Screen
+                name="(home)"
+                options={{
+                    headerShown: false,
+                    title: 'Home',
+                }}
+            />
+            <Stack.Screen
+                name="profile"
+                options={{
+                    headerShown: true,
+                    title: 'Profile',
                 }}
             />
         </Stack>
@@ -35,7 +50,9 @@ function checkAuthStatus() {
 const RootLayout = () => {
     return (
         <UserLoggedInProvider>
-            <InitialLayout />
+            <PageDetailsProvider>
+                <InitialLayout/>
+            </PageDetailsProvider>
         </UserLoggedInProvider>
     );
 };

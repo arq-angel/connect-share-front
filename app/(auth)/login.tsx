@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
     View,
     Text,
@@ -7,43 +7,46 @@ import {
     Platform,
     TouchableOpacity, Alert
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import {useRouter} from 'expo-router';
 import {login} from '../../api/auth';
+import {bearerTokenStore} from "../../store/bearerTokenStore";
 
 export default function Login() {
-    const [userLoggedIn, setUserLoggedIn] = useState(false);
     const router = useRouter();
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('')
+    const [password, setPassword] = useState('');
     const keyboardVerticalOffset = Platform.OS === 'ios' ? 80 : 0;
+    const [loggingIn, setLoggingIn] = useState(false);
 
     useEffect(() => {
-        if (userLoggedIn) {
-            router.replace('/(home)');
-        }
-    }, [userLoggedIn]);
+        setEmail('john.doe@example.com');
+        setPassword('password');
+    }, []);
 
     const handleLogin = async () => {
-
-        /*if (email === 'abc@def.com' && password === 'password') {
-            setUserLoggedIn(true);
-        } else {
-            Alert.alert('Error', 'Incorrect email or password');
-        }*/
+        setLoggingIn(true);  // Start loading
 
         try {
             const response = await login(email, password);
-            console.log('Login successful:', response);
-            setUserLoggedIn(true);
+            console.log('Login response:', response);
+
+            if (response.success) {
+                bearerTokenStore.getState().setToken(response.data.token);
+                router.replace('/(home)');
+            } else {
+                Alert.alert('Error', response.message || 'Login failed');
+            }
         } catch (error) {
             console.log('Login error:', error);
+            Alert.alert('Error', 'An error occurred while logging in');
+        } finally {
+            setLoggingIn(false);  // Stop loading
         }
-
-    }
+    };
 
     return (
         <KeyboardAvoidingView
-            style={{ flex: 1 }}
+            style={{flex: 1}}
             behavior="padding"
             keyboardVerticalOffset={keyboardVerticalOffset}>
             <View className="flex flex-col justify-center items-center mt-20 space-y-3">
@@ -65,14 +68,15 @@ export default function Login() {
                         secureTextEntry
                         autoCapitalize="none"
                     />
-
                 </View>
 
                 <TouchableOpacity
-                onPress={handleLogin}
-                className="bg-blue-600 p-2 rounded-lg"
-                >
-                    <Text className="text-xl text-white">Continue</Text>
+                    onPress={handleLogin}
+                    className="bg-blue-600 p-2 rounded-lg"
+                    disabled={loggingIn}>
+                    <Text className="text-xl text-white">
+                        {loggingIn ? 'Logging in...' : 'Continue'}
+                    </Text>
                 </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>

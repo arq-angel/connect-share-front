@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, Text, TouchableOpacity} from "react-native";
-import {router} from "expo-router";
 
 const ContactItem = ({employee}) => {
     return (

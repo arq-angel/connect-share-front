@@ -29,3 +29,21 @@ export const login = async (email, password) => {
         throw error;
     }
 };
+
+export const checkTokenValidity = async (token) => {
+    try {
+        const response = await axios('https://your-api-url.com/check-token', {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        return response.data.isValid;  // Assuming your API returns { isValid: true/false }
+    } catch (error) {
+        console.error("Error checking token validity:", error);
+        return false;  // If there's an error, treat the token as invalid
+    }
+};
+
