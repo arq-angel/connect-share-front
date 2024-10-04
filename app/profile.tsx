@@ -1,7 +1,6 @@
-// app/profile.js
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
-export default function Profile() {
+export default function Page() {
     return (
         <View>
             <Text>Profile Page</Text>

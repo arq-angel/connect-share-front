@@ -1,12 +1,9 @@
-import React from 'react';
-import {View, Text} from "react-native";
+import {View, Text, StyleSheet} from "react-native";
 
 const Page = () => {
     return (
         <View>
-            <Text>
-                Settings page
-            </Text>
+            <Text>Settings page</Text>
         </View>
     );
 };
