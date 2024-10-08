@@ -16,6 +16,12 @@
 		96905EF65AED1B983A6B3ABC /* libPods-connectshare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-connectshare.a */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		E168BA1A684646238DA825E2 /* default-Icon-60x60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E2453F9906624FCDAAF49ED0 /* default-Icon-60x60@2x.png */; };
+		1687D30495A2405C82297616 /* default-Icon-60x60@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00B25CCBA715457AAF1ECB5F /* default-Icon-60x60@3x.png */; };
+		3B2E4FEFFB5340C4892D4604 /* dark-Icon-60x60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C3D0AECF468B4361BFE35983 /* dark-Icon-60x60@2x.png */; };
+		D02FF5FD4B7B430D9E70D629 /* dark-Icon-60x60@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 80A980331C7D410CB90BE876 /* dark-Icon-60x60@3x.png */; };
+		3D4C24A5BC954DB6A463607F /* vivid-Icon-60x60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 827CC24D61B349F1B618D904 /* vivid-Icon-60x60@2x.png */; };
+		2181D00EB24446D180163F66 /* vivid-Icon-60x60@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 131455DF0D6947F48FB4C312 /* vivid-Icon-60x60@3x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +41,12 @@
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-connectshare/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		E2453F9906624FCDAAF49ED0 /* default-Icon-60x60@2x.png */ = {isa = PBXFileReference; name = "default-Icon-60x60@2x.png"; path = "connectshare/DynamicAppIcons/default-Icon-60x60@2x.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		00B25CCBA715457AAF1ECB5F /* default-Icon-60x60@3x.png */ = {isa = PBXFileReference; name = "default-Icon-60x60@3x.png"; path = "connectshare/DynamicAppIcons/default-Icon-60x60@3x.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C3D0AECF468B4361BFE35983 /* dark-Icon-60x60@2x.png */ = {isa = PBXFileReference; name = "dark-Icon-60x60@2x.png"; path = "connectshare/DynamicAppIcons/dark-Icon-60x60@2x.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		80A980331C7D410CB90BE876 /* dark-Icon-60x60@3x.png */ = {isa = PBXFileReference; name = "dark-Icon-60x60@3x.png"; path = "connectshare/DynamicAppIcons/dark-Icon-60x60@3x.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		827CC24D61B349F1B618D904 /* vivid-Icon-60x60@2x.png */ = {isa = PBXFileReference; name = "vivid-Icon-60x60@2x.png"; path = "connectshare/DynamicAppIcons/vivid-Icon-60x60@2x.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		131455DF0D6947F48FB4C312 /* vivid-Icon-60x60@3x.png */ = {isa = PBXFileReference; name = "vivid-Icon-60x60@3x.png"; path = "connectshare/DynamicAppIcons/vivid-Icon-60x60@3x.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +74,7 @@
 				82FC2B6FBB584B3188704F17 /* noop-file.swift */,
 				B9B36ABBC610494CAC9A9E87 /* connectshare-Bridging-Header.h */,
 				7399B9DCF19A4A0452DB0561 /* PrivacyInfo.xcprivacy */,
+				C0B58ECA593C475C86A6AA27 /* DynamicAppIcons */,
 			);
 			name = connectshare;
 			sourceTree = "<group>";
@@ -120,6 +133,20 @@
 			);
 			name = Supporting;
 			path = connectshare/Supporting;
+			sourceTree = "<group>";
+		};
+		C0B58ECA593C475C86A6AA27 /* DynamicAppIcons */ = {
+			isa = PBXGroup;
+			children = (
+				E2453F9906624FCDAAF49ED0 /* default-Icon-60x60@2x.png */,
+				00B25CCBA715457AAF1ECB5F /* default-Icon-60x60@3x.png */,
+				C3D0AECF468B4361BFE35983 /* dark-Icon-60x60@2x.png */,
+				80A980331C7D410CB90BE876 /* dark-Icon-60x60@3x.png */,
+				827CC24D61B349F1B618D904 /* vivid-Icon-60x60@2x.png */,
+				131455DF0D6947F48FB4C312 /* vivid-Icon-60x60@3x.png */,
+			);
+			name = DynamicAppIcons;
+			path = "";
 			sourceTree = "<group>";
 		};
 		D65327D7A22EEC0BE12398D9 /* Pods */ = {
@@ -204,6 +231,12 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
 				07C4829446C30A63114DF3FF /* PrivacyInfo.xcprivacy in Resources */,
+				E168BA1A684646238DA825E2 /* default-Icon-60x60@2x.png in Resources */,
+				1687D30495A2405C82297616 /* default-Icon-60x60@3x.png in Resources */,
+				3B2E4FEFFB5340C4892D4604 /* dark-Icon-60x60@2x.png in Resources */,
+				D02FF5FD4B7B430D9E70D629 /* dark-Icon-60x60@3x.png in Resources */,
+				3D4C24A5BC954DB6A463607F /* vivid-Icon-60x60@2x.png in Resources */,
+				2181D00EB24446D180163F66 /* vivid-Icon-60x60@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -532,6 +565,9 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin PBXVariantGroup section */
+/* End PBXVariantGroup section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }

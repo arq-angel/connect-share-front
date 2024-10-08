@@ -1,5 +1,5 @@
 import {Tabs} from "expo-router";
-import TopBar from "../../components/TopBar";
+import TopBar from "../../../components/TopBar";
 import {SafeAreaView, View, Text} from "react-native";
 import {FontAwesome} from "@expo/vector-icons";
 
@@ -13,7 +13,7 @@ export default function TabLayout() {
             </SafeAreaView>
             {/* No gap between TopBar and Tabs */}
             <View className="flex-1">
-                <Tabs screenOptions={{
+                {/*<Tabs screenOptions={{
                     headerShown: false,
                     tabBarActiveTintColor: '#2f95dc',
                     tabBarInactiveTintColor: 'gray',
@@ -36,7 +36,7 @@ export default function TabLayout() {
                             ),
                         }}
                     />
-                </Tabs>
+                </Tabs>*/}
             </View>
         </View>
     );
