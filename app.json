@@ -14,14 +14,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.arq-angel.connect_share_v2"
+      "bundleIdentifier": "com.test.connectsharev2"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.arq-angel.connect_share_v2"
+      "package": "com.test.connectsharev2"
     },
     "web": {
       "favicon": "./assets/favicon.png",

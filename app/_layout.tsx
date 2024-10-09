@@ -1,29 +1,62 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Stack, useRouter} from "expo-router";
 import {ActivityIndicator, View, Text} from "react-native";
 import UserLoggedInProvider, {UserLoggedInContext} from "../context/UserLoggedIn";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {useConfirmToken} from "../api/auth";
+import {bearerTokenStore} from "../store/bearerTokenStore";
+
+const queryClient = new QueryClient();
 
 const InitialLayout = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // Replace with actual auth logic
+    const {userLoggedIn, setUserLoggedIn} = useContext(UserLoggedInContext);
     const [isLoading, setIsLoading] = useState(true); // Loading state for authentication check
     const router = useRouter();
+    const token = bearerTokenStore.getState().token;
+
+
+    // verifying token process
+    const {mutate, error, data} = useConfirmToken();
+    const handleTokenVerification = () => {
+
+        // not necessary since empty token sets the validation fail and redirects to login anyway - otherwise redirect before mounting error comes
+        /*if (!token) {
+            setIsLoading(false);
+            // Redirect if no token exists
+            console.log("No token found, redirecting to login");
+            router.replace("/(auth)/login");
+            return;
+        }*/
+
+        mutate(token, {
+            onSuccess: (data) => {
+                // Handle the response here
+                // Handle Unauthenticated response
+                if (data.message == 'Unauthenticated') {
+                    console.log("Unauthenticated:", data.message)
+                    setUserLoggedIn(false);
+                    setIsLoading(false);
+                    router.replace("/(auth)/login");
+                }
+
+                console.log("Token Verified:", data.message);
+                setUserLoggedIn(true);
+                setIsLoading(false);
+                router.replace("/(home)/contact");
+            },
+            onError: (error) => {
+                // Handle any errors here
+                console.log("Login failed:", error);
+                setUserLoggedIn(false);
+                setIsLoading(false);
+                router.replace("/(auth)/login");
+            }
+        })
+    }
 
     useEffect(() => {
-        // Simulate authentication check (replace with real logic)
-        const checkLoginStatus = async () => {
-            await new Promise(resolve => setTimeout(resolve, 100)); // Simulate delay
-            setIsLoggedIn(false); // Set to true if the user is authenticated
-            setIsLoading(false); // Authentication check completed
-        };
-
-        checkLoginStatus();
+        handleTokenVerification();
     }, []);
-
-    useEffect(() => {
-        if (!isLoading && !isLoggedIn) {
-            router.replace("/(auth)/login"); // Redirect to login if not authenticated
-        }
-    }, [isLoading, isLoggedIn]);
 
     // Show a loading screen while authentication is being checked
     if (isLoading) {
@@ -66,9 +99,11 @@ const InitialLayout = () => {
 
 const RootLayout = () => {
     return (
-        <UserLoggedInProvider>
-            <InitialLayout/>
-        </UserLoggedInProvider>
+        <QueryClientProvider client={queryClient}>
+            <UserLoggedInProvider>
+                <InitialLayout/>
+            </UserLoggedInProvider>
+        </QueryClientProvider>
     )
 };
 
