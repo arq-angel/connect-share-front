@@ -5,7 +5,7 @@ import UserLoggedInProvider, {UserLoggedInContext} from "../context/UserLoggedIn
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {useConfirmToken} from "../api/auth";
 import {bearerTokenStore} from "../store/bearerTokenStore";
-
+import PageHeadingProvider from "../context/PageHeading";
 const queryClient = new QueryClient();
 
 const InitialLayout = () => {
@@ -63,7 +63,7 @@ const InitialLayout = () => {
         return (
             <View className="flex-1 items-center justify-center bg-white">
                 <ActivityIndicator size="large" color="#0000ff"/>
-                <Text>Loading...</Text>
+                <Text>Logging in...</Text>
             </View>
         );
     }
@@ -101,7 +101,9 @@ const RootLayout = () => {
     return (
         <QueryClientProvider client={queryClient}>
             <UserLoggedInProvider>
-                <InitialLayout/>
+                <PageHeadingProvider>
+                    <InitialLayout/>
+                </PageHeadingProvider>
             </UserLoggedInProvider>
         </QueryClientProvider>
     )

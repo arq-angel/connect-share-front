@@ -64,7 +64,7 @@ const Page = () => {
             <View className=" items-center justify-center flex-row">
                 <TouchableOpacity
                     onPress={handleLogout}
-                    className={`flex-1 mx-6 p-3 rounded-lg justify-center items-center ${isLoading ? 'bg-blue-400' : 'bg-blue-600'}`}
+                    className={`flex-1 mx-6 p-3 border-2 rounded-lg justify-center items-center ${isLoading ? 'bg-blue-400 border-blue-400' : 'bg-blue-600 border-blue-600'}`}
                     disabled={isLoading}
                 >
                     <Text className="font-bold text-white">{isLoading ? 'Logging out...' : 'Logout'}</Text>
