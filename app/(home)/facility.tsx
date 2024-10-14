@@ -1,15 +1,28 @@
-import React from 'react';
-import {View, Text, ScrollView} from "react-native";
+import React, {useCallback, useContext} from 'react';
+import {View, ScrollView, SafeAreaView} from "react-native";
 import TopBar from "../../components/TopBar";
+import {PageHeadingContext} from "../../context/PageHeading";
+import {useFocusEffect} from "expo-router";
 
 const Page = () => {
+    const {heading, setHeading} = useContext(PageHeadingContext);
+
+    useFocusEffect(
+        useCallback(() => {
+            setHeading('Facilities');
+            return () => {};
+        }, [setHeading])
+    );
+
     return (
-        <ScrollView>
-            <TopBar />
-            <View className="flex-1 justify-center items-center">
-                <Text className="font-bold">Facilities Page</Text>
-            </View>
-        </ScrollView>
+        <View className="bg-white flex-1">
+            <SafeAreaView>
+                <TopBar/>
+            </SafeAreaView>
+            <ScrollView className="bg-white">
+
+            </ScrollView>
+        </View>
     );
 };
 

@@ -1,81 +1,129 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {View, Text, ScrollView, ActivityIndicator, SafeAreaView} from "react-native";
+import React, {useCallback, useContext, useEffect, useState} from 'react';
+import {
+    View,
+    Text,
+    FlatList,
+    SafeAreaView,
+    ActivityIndicator, Image, TouchableOpacity, ScrollView,
+} from "react-native";
 import TopBar from "../../components/TopBar";
-import {useFetchEmployees} from "../../api/contact";
-import {bearerTokenStore} from "../../store/bearerTokenStore";
-import ContactItem from "../../components/ContactItem";
 import {PageHeadingContext} from "../../context/PageHeading";
+import SearchBar from "../../components/SearchBar";
+import ContactItem from "../../components/ContactItem";
+import {useFocusEffect} from "expo-router";
+import {getContacts} from "../../api/contact";
+import {useInfiniteQuery, useQueryClient} from "@tanstack/react-query";
+import useDebounce from "../../hooks/useDebounce";
+import {log} from "expo/build/devtools/logger";
+import {all} from "axios";
 
 const Page = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [queryParams, setQueryParams] = useState({
-        search: '',
-        page: 1,
-        perPage: 15,
+    const {setHeading} = useContext(PageHeadingContext);
+    const [search, setSearch] = useState('');
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const queryClient = useQueryClient();
+
+    useFocusEffect(
+        useCallback(() => {
+            setHeading('Contacts');
+            return () => {
+            };
+        }, [setHeading])
+    );
+
+    const {
+        status,
+        error,
+        data,
+        isFetchingNextPage,
+        hasNextPage,
+        fetchNextPage,
+        refetch,
+        isFetching
+    } = useInfiniteQuery({
+        queryKey: ["contacts", "infinite"],
+        getNextPageParam: lastPage => lastPage.nextPage || undefined,
+        queryFn: ({pageParam = 1}) => getContacts({
+            page: pageParam,
+            search,
+            perPage: 25
+        }),
     });
-    const {heading, setHeading} = useContext(PageHeadingContext);
 
-    // fetch employees
-    const {mutate, error, data} = useFetchEmployees();
-    const handleFetchEmployees = () => {
-        setIsLoading(true);
-
-        const requestData = {
-            token: bearerTokenStore.getState().token,
-            queryParams: queryParams,
-        }
-
-        mutate(requestData, {
-            onSuccess: (data) => {
-                if (!data.success) {
-                    console.log("Fetch returned with error:", data.message)
-                    setIsLoading(false);
-                }
-                setIsLoading(false);
-                console.log('Fetched Data: ', data);
-            },
-            onError: (error) => {
-                // Handle any errors here
-                console.log("Employee data fetch failed:", error);
-                setIsLoading(false);
-            }
-        })
+    const handleTextChange = (text) => {
+        setSearch(text);
+        refetch(["contacts", "infinite"]);
     }
 
-    useEffect(() => {
-        if (!isLoading) {
-            handleFetchEmployees();
+    const refreshContacts = async () => {
+        setIsRefreshing(true);
+        try {
+            console.log("Refreshing contacts...");
+            refetch(["contacts", "infinite"]);
+        } catch (error) {
+            console.error("Error fetching contacts:", error);
+        } finally {
+            setIsRefreshing(false);
         }
-        setHeading('Contacts');
-    }, [])
+    };
 
+    console.log("status: ", status);
+    console.log("isFetching: ", isFetching);
+
+    if (status === "success" && !isFetching) {
+        console.log("Data at contact page: ", data.pages);
+    }
+
+    const allContacts = data ? data.pages.flatMap(page => page.data) : [];
+
+    // console.log("All contacts: ", allContacts);
 
     return (
-        <View>
+        <View className="bg-white flex-1">
             <SafeAreaView>
                 <TopBar/>
-            </SafeAreaView>
-            <ScrollView className="bg-white">
+                <SearchBar searchTerm="Contacts..." search={search} handleTextChange={handleTextChange}/>
 
-                {isLoading && (
-                    <View className="flex-1 items-center justify-center">
+                {status === 'pending' && (
+                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 20}}>
                         <ActivityIndicator size="large" color="#0000ff"/>
-                        <Text>Loading...</Text>
-                    </View>
-                )}
-                {!isLoading && data && (
-                    <View className="flex-1 justify-center px-3 pt-2 flex-col bg-gray-200">
-
-                        {/*<Text>{JSON.stringify(data.data, null, 2)}</Text>*/}
-                        {data.data.map((item, key)=> {
-                            return (
-                                <ContactItem key={key} item={item} />
-                            )
-                        })}
+                        <Text>Loading contacts...</Text>
                     </View>
                 )}
 
-            </ScrollView>
+                {status === 'error' && (
+                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={{color: 'red'}}>Error: {error.message || 'Something went wrong'}</Text>
+                    </View>
+                )}
+
+                {status === 'success' && (
+                    <FlatList
+                        data={allContacts}
+                        renderItem={({item}) => (
+                            <ContactItem item={item}/>
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                        onEndReached={() => {
+                            console.log("End reached")
+                            if (hasNextPage) {
+                                fetchNextPage();
+                            }
+                        }}
+                        onEndReachedThreshold={0.1}
+                        ListFooterComponent={() =>
+                            isFetchingNextPage ? (
+                                <ActivityIndicator size="small" color="#0000ff"/>
+                            ) : null
+                        }
+                        contentContainerStyle={{minHeight: '100%', paddingBottom: 100}}
+                        onRefresh={() => {
+                            refreshContacts();
+                        }}
+                        refreshing={isRefreshing}
+                    />
+                )}
+            </SafeAreaView>
         </View>
     );
 };
