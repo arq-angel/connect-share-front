@@ -11,16 +11,16 @@ const TopBar = () => {
 
     return (
         <View className="flex flex-row justify-between items-center p-3 bg-white">
-            <TouchableOpacity onPress={() => router.push("/settings")}>
-                <FontAwesome name="gear" size={30} color={Colors.primary} />
-            </TouchableOpacity>
             <View className="flex-1 justify-center items-center">
-                <Text className="text-xl">{heading}</Text>
+                <Text className="text-xl font-semibold">{heading}</Text>
             </View>
-            <TouchableOpacity onPress={() => router.push("/profile")}>
-                <FontAwesome name="user" size={30} color={Colors.primary} />
-            </TouchableOpacity>
+            <View className="absolute right-3 justify-center items-center">
+                <TouchableOpacity onPress={() => router.push("/(profile)/profileMenu")}>
+                    <FontAwesome name="user" size={30} color={Colors.primary} />
+                </TouchableOpacity>
+            </View>
         </View>
+
     );
 };
 

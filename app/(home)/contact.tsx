@@ -18,7 +18,7 @@ import {log} from "expo/build/devtools/logger";
 import {all} from "axios";
 
 const Page = () => {
-    const {setHeading} = useContext(PageHeadingContext);
+    const {heading, setHeading} = useContext(PageHeadingContext);
     const [search, setSearch] = useState('');
     const [isRefreshing, setIsRefreshing] = useState(false);
     const queryClient = useQueryClient();
@@ -28,7 +28,7 @@ const Page = () => {
             setHeading('Contacts');
             return () => {
             };
-        }, [setHeading])
+        }, [heading])
     );
 
     const {
@@ -46,12 +46,17 @@ const Page = () => {
         queryFn: ({pageParam = 1}) => getContacts({
             page: pageParam,
             search,
-            perPage: 25
+            perPage: 25 // have to set to 25 otherwise there will be bug where many fetchNextPage will occur by reaching the bottom
         }),
     });
 
     const handleTextChange = (text) => {
         setSearch(text);
+        queryClient.removeQueries(["contacts", "infinite"]);
+        if (text === '') {
+            queryClient.removeQueries(["contacts", "infinite"]);
+            refreshContacts();
+        }
         refetch(["contacts", "infinite"]);
     }
 
@@ -59,6 +64,7 @@ const Page = () => {
         setIsRefreshing(true);
         try {
             console.log("Refreshing contacts...");
+            // queryClient.removeQueries(["contacts", "infinite"]);
             refetch(["contacts", "infinite"]);
         } catch (error) {
             console.error("Error fetching contacts:", error);

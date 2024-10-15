@@ -1,11 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Stack, useRouter} from "expo-router";
-import {ActivityIndicator, View, Text} from "react-native";
+import {ActivityIndicator, View, Text, TouchableOpacity} from "react-native";
 import UserLoggedInProvider, {UserLoggedInContext} from "../context/UserLoggedIn";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {useConfirmToken} from "../api/auth";
 import {bearerTokenStore} from "../store/bearerTokenStore";
 import PageHeadingProvider from "../context/PageHeading";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 const queryClient = new QueryClient();
 
 const InitialLayout = () => {
@@ -82,16 +84,65 @@ const InitialLayout = () => {
                 }}
             />
             <Stack.Screen
-                name="settings"
-                options={{
+                name="(profile)/profileMenu"
+                options={({navigation}) => ({
                     headerShown: true,
-                }}
+                    headerTitle: 'Profile',
+                    headerLeft: () => (
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <FontAwesome name="arrow-left" size={18} color="black"/>
+                        </TouchableOpacity>
+                    ),
+                })}
+
             />
             <Stack.Screen
-                name="profile"
-                options={{
+                name="(profile)/settings"
+                options={({navigation}) => ({
                     headerShown: true,
-                }}
+                    headerTitle: 'Settings',
+                    headerLeft: () => (
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <FontAwesome name="arrow-left" size={18} color="black"/>
+                        </TouchableOpacity>
+                    ),
+                })}
+            />
+            <Stack.Screen
+                name="(profile)/editProfile"
+                options={({navigation}) => ({
+                    headerShown: true,
+                    headerTitle: 'Edit Profile',
+                    headerLeft: () => (
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <FontAwesome name="arrow-left" size={18} color="black"/>
+                        </TouchableOpacity>
+                    ),
+                })}
+            />
+            <Stack.Screen
+                name="(profile)/help"
+                options={({navigation}) => ({
+                    headerShown: true,
+                    headerTitle: 'Help Center',
+                    headerLeft: () => (
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <FontAwesome name="arrow-left" size={18} color="black"/>
+                        </TouchableOpacity>
+                    ),
+                })}
+            />
+            <Stack.Screen
+                name="(profile)/privacy"
+                options={({navigation}) => ({
+                    headerShown: true,
+                    headerTitle: 'Privacy Policy',
+                    headerLeft: () => (
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <FontAwesome name="arrow-left" size={18} color="black"/>
+                        </TouchableOpacity>
+                    ),
+                })}
             />
         </Stack>
     );

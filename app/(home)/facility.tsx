@@ -11,7 +11,7 @@ const Page = () => {
         useCallback(() => {
             setHeading('Facilities');
             return () => {};
-        }, [setHeading])
+        }, [heading])
     );
 
     return (

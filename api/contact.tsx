@@ -4,6 +4,7 @@ import axios from "axios";
 const siteToken = '7|ddVwAWCcbmI9TrUIwnSJAqO7K7DJY6ypsX5Fq5pvad7907ac';
 const baseUrl = 'https://myapplib.com/api/v1/employees';
 
+// have to set to 25 otherwise there will be bug where many fetchNextPage will occur by reaching the bottom
 export const getContacts = ({page = 1, search = '', perPage = 25}) => {
     const token = bearerTokenStore.getState().token;
 
