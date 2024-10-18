@@ -4,7 +4,7 @@ import {View, Text} from "react-native";
 const Page = () => {
     return (
         <View className="flex-1 justify-center items-center">
-            <Text className="text-lg">Contacts Page</Text>
+            <Text className="text-lg">Favourites Page</Text>
         </View>
     );
 };
