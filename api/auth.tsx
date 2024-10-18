@@ -1,133 +1,197 @@
-import { useMutation } from "@tanstack/react-query";
+import {bearerTokenStore} from "../store/bearerTokenStore";
+import axios from "axios";
 
 const siteToken = '7|ddVwAWCcbmI9TrUIwnSJAqO7K7DJY6ypsX5Fq5pvad7907ac';
-const headers = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-};
+const baseUrl = 'https://myapplib.com/api/v1';
 
-export const useLoginMutation = () => {
-    return useMutation({
-        mutationFn: async (loginData) => {
-            console.log("Login fetch start")
-            const response = await fetch('https://myapplib.com/api/v1/login?siteToken=' + siteToken, {
-                method: 'POST',
-                headers: headers,
-                body: JSON.stringify({
-                    email: loginData.email,
-                    password: loginData.password,
-                    deviceName: loginData.deviceName
-                }),
-            });
+export const postLogin = (loginData) => {
+    console.log("Login start...")
+    const loginUrl = `${baseUrl}/login`;
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+    console.log("loginData:", loginData);
 
-            const data = await response.json();  // Convert response to JSON
-            console.log('Response:', data);
-
-            if (!data.success) {
-                console.error('HTTP Error:', data);
-                return Promise.reject(data.message);  // Reject the promise to trigger error handling
-            }
-
-            if (data?.message === 'Unauthenticated') {
-                console.log('Error:', data.message);
-                return Promise.reject('Unauthenticated');  // Trigger an error for further handling
-            }
-
-            // Check for the expected token in the response and return the data
-            if (data.success && data.data?.token) {
-                console.log('Login successful, token:', data.data.token);
-                return {
-                    token: data.data.token,
-                    expiresAt: data.data.expiresAt,
-                    message: data.message
-                };  // Return the token and additional information
-            }
-
-            return Promise.reject('Unexpected response format');
-        }
-    });
-};
-
-export const useConfirmToken = () => {
-    return useMutation({
-        mutationFn: async (token) => {
-            console.log("Verify token fetch start");
-
-            const response = await fetch('https://myapplib.com/api/v1/validate-token?siteToken=' + siteToken, {
-                method: 'GET',
+    return axios
+        .post(loginUrl, {
+                email: loginData.email,
+                password: loginData.password,
+                deviceName: loginData.deviceName || 'iOS Emulator',
+            },
+            {
                 headers: {
-                    Accept: 'application/json',
-                    Authorization: `Bearer ${token}`
-                }
-            });
+                    'Content-Type': 'application/json',
+                    "Accept": "application/json",
+                },
+                params: {
+                    ...(siteToken && {siteToken: siteToken}),
+                },
+            })
+        .then(response => {
+            const responseData = response.data;
+            console.log("Response:", responseData);
 
-            if (!response.ok) {
-                // Handle non-200 HTTP status codes
-                return Promise.reject(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();  // Parse the response as JSON
-            console.log('Response:', data);
-
-            if (!data.success) {
-                console.error('Error:', data);
-                return Promise.reject(data.message);  // Reject to trigger error handling
-            }
-
-            // Check if the token is valid based on the response
-            if (data.success && data.message === 'Valid Bearer token') {
-                console.log('Token verification successful:', data.message);
+            // Check if response data contains success and token
+            if (responseData?.success && responseData?.data?.token && responseData?.data?.expiresAt) {
                 return {
-                    message: data.message,
-                    verified: true
-                };  // Return success message
+                    success: true,
+                    message: responseData.data.message,
+                    token: responseData.data.token,
+                    expiresAt: responseData.data.expiresAt,
+                }
             }
 
-            return Promise.reject('Unexpected response format');
-        }
-    })
+            // Handle unexpected success response structure
+            return Promise.reject('Unexpected response from server.');
+        })
+        .catch(error => {
+            console.log("Axios Error:", error);
+            console.log("Error:", error.response.data);
+
+            // Set default error message
+            let errorMessage = 'An unexpected error occurred.';
+
+            // Check for specific error response
+            if (error.response) {
+                const responseData = error.response.data;
+
+                // return the error promise no matter what error we get either validation, authentication or network error
+                if (responseData.errors || responseData.message) {
+                    errorMessage = 'Invalid credentials. Please try again.';
+                }
+            } else {
+                // If there's no response from the server
+                errorMessage = 'Network error. Please check your connection.';
+            }
+
+            return Promise.reject(errorMessage);
+        })
+        .finally(() => {
+            console.log("Login finished...")
+        });
 }
 
-export const useLogoutMutation = () => {
-    return useMutation({
-        mutationFn: async (token) => {
-            console.log("Logout start");
+export const postLogout = () => {
+    // This has to be called on function mounting to get the recent token otherwise it will use the previous stored token instead of the current one
+    const token = bearerTokenStore.getState().token;
+    console.log("Logout start...");
+    const logoutUrl = `${baseUrl}/logout`;
 
-            const response = await fetch('https://myapplib.com/api/v1/logout?siteToken=' + siteToken, {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    Authorization: `Bearer ${token}`
-                }
-            });
+    console.log("Header Token:", token);
 
-            if (!response.ok) {
-                // Handle non-200 HTTP status codes
-                return Promise.reject(`HTTP error! status: ${response.status}`);
+    return axios
+        .post(logoutUrl, null, { // null to correctly format the post request
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            params: {
+                ...(siteToken && {siteToken: siteToken}),
             }
+        })
+        .then(response => {
+            const responseData = response.data;
+            console.log("Response:", responseData)
 
-            const data = await response.json();  // Parse the response as JSON
-            console.log('Response:', data);
+            if (responseData?.success && responseData?.message) {
+                console.log("Success:", responseData.message);
 
-            if (!data.success) {
-                console.error('Error:', data);
-                return Promise.reject(data.message);  // Reject to trigger error handling
-            }
-
-            // Check if the token is valid based on the response
-            if (data.success && data.message === 'Logged out successfully') {
-                console.log('Logout successful:', data.message);
                 return {
-                    message: data.message,
-                    loggedOut: true
-                };  // Return success message
+                    success: true,
+                    message: responseData.message,
+                }
             }
 
-            return Promise.reject('Unexpected response format');
-        }
-    })
+            return Promise.reject('Unexpected response from serve.');
+
+        })
+        .catch(error => {
+            console.log("Axios Error:", error);
+            console.log("Error:", error.response.data);
+
+            // Set default error message
+            let errorMessage = 'An unexpected error occurred.';
+
+            // Check for specific error response
+            if (error.response) {
+                const responseData = error.response.data;
+
+                // return the error promise no matter what error we get either validation, authentication or network error
+                if (responseData.message == 'Unauthenticated.') {
+                    errorMessage = 'Token Expired.';
+                }
+            } else {
+                // If there's no response from the server
+                errorMessage = 'Network error. Please check your connection.';
+            }
+
+            return Promise.reject(errorMessage);
+
+        })
+        .finally(() => {
+            console.log("Logout finished...")
+        })
+}
+
+export const getConfirmToken = () => {
+    // This has to be called on function mounting to get the recent token otherwise it will use the previous stored token instead of the current one
+    const token = bearerTokenStore.getState().token;
+    console.log("Token confirmation start...");
+    const logoutUrl = `${baseUrl}/validate-token`;
+
+    console.log("Header Token:", token);
+
+    return axios
+        .get(logoutUrl, {
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            params: {
+                ...(siteToken && {siteToken: siteToken}),
+            }
+        })
+        .then(response => {
+            const responseData = response.data;
+            console.log("Response:", responseData)
+
+            if (responseData?.success && responseData?.message) {
+                console.log("Success:", responseData.message);
+
+                return {
+                    success: true,
+                    message: responseData.message,
+                }
+            }
+
+            return Promise.reject('Unexpected response from serve.');
+
+        })
+        .catch(error => {
+            console.log("Axios Error:", error);
+            console.log("Error:", error.response.data);
+
+            // Set default error message
+            let errorMessage = 'An unexpected error occurred.';
+
+            // Check for specific error response
+            if (error.response) {
+                const responseData = error.response.data;
+
+                // return the error promise no matter what error we get either validation, authentication or network error
+                if (responseData.message == 'Unauthenticated.') {
+                    errorMessage = 'Token Expired.';
+                }
+            } else {
+                // If there's no response from the server
+                errorMessage = 'Network error. Please check your connection.';
+            }
+
+            return Promise.reject(errorMessage);
+
+        })
+        .finally(() => {
+            console.log("Confirm token finished...")
+        })
+
 }
