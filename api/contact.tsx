@@ -7,8 +7,7 @@ const baseUrl = 'https://myapplib.com/api/v1/employees';
 // have to set to 25 otherwise there will be bug where many fetchNextPage will occur by reaching the bottom
 export const getContacts = ({page = 1, search = '', perPage = 25}) => {
     const token = bearerTokenStore.getState().token;
-
-    console.log("Fetch employees start...")
+    console.log("Fetch contacts start...")
     return axios
         .get(baseUrl, {
             headers: {
@@ -27,12 +26,19 @@ export const getContacts = ({page = 1, search = '', perPage = 25}) => {
             if (response.data && response.data.success) {
                 console.log("Success:", response.data.message);
                 console.log("Pagination:", response.data.data.pagination);
-                const hasNextPage = !!response.data.data.pagination.nextPageUrl;
+
+                const pagination = response.data.data.pagination;
+                const hasNextPage = !!pagination.nextPageUrl;
+
+                // Get the number of fetched items
+                const numberFetched = pagination.perPage; // Current page's items count
 
                 return {
                     data: response.data.data.requests,  // Employee data
                     nextPage: hasNextPage ? page + 1 : undefined,  // If there is a next page
-                    search: response.data.data.queryParams?.search || search  // Current search term
+                    search: response.data.data.queryParams?.search || search,  // Current search term
+                    numberFetched: numberFetched, // Number of fetched items for this request
+                    totalCount: pagination.total // Total number of items
                 };
             } else {
                 const message = response.data?.message || 'An unknown error occurred';
@@ -52,5 +58,8 @@ export const getContacts = ({page = 1, search = '', perPage = 25}) => {
                 console.error("Request Error:", error.message);
                 return Promise.reject(new Error(error.message));
             }
+        })
+        .finally(() => {
+            console.log("Fetch contacts finished");
         })
 }

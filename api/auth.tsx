@@ -136,10 +136,10 @@ export const getConfirmToken = () => {
     // This has to be called on function mounting to get the recent token otherwise it will use the previous stored token instead of the current one
     const token = bearerTokenStore.getState().token;
     console.log("Token confirmation start...");
+
     const logoutUrl = `${baseUrl}/validate-token`;
 
     console.log("Header Token:", token);
-
     return axios
         .get(logoutUrl, {
             headers: {

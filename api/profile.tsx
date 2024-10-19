@@ -3,10 +3,10 @@ import axios from "axios";
 
 const siteToken = '7|ddVwAWCcbmI9TrUIwnSJAqO7K7DJY6ypsX5Fq5pvad7907ac';
 const baseUrl = 'https://myapplib.com/api/v1/profile';
-const token = bearerTokenStore.getState().token;
 
 // have to set to 25 otherwise there will be bug where many fetchNextPage will occur by reaching the bottom
 export const getProfile = () => {
+    const token = bearerTokenStore.getState().token;
     console.log("Fetch employee profile start...")
     return axios
         .get(baseUrl, {
@@ -44,9 +44,13 @@ export const getProfile = () => {
                 return Promise.reject(new Error(error.message));
             }
         })
+        .finally(() => {
+            console.log("Fetch employee profile finished");
+        })
 }
 
 export const updateProfile = (data) => {
+    const token = bearerTokenStore.getState().token;
     const newUrl = baseUrl + '/1'; // here 1 is an arbitrary value just to access the update method the user id is retrieved using bearer token
     console.log("Update profile start...")
     return axios
@@ -98,5 +102,8 @@ export const updateProfile = (data) => {
                 console.error("Request Error:", error.message);
                 return Promise.reject(new Error(error.message));
             }
+        })
+        .finally(() => {
+            console.log("Update profile finished");
         })
 }
