@@ -13,7 +13,7 @@ const db = SQLite.openDatabase(
     }
 );
 
-const createTable = () => {
+const createEmployeeTable = () => {
     db.transaction((tx) => {
         tx.executeSql(
             `CREATE TABLE IF NOT EXISTS employees(
@@ -23,7 +23,7 @@ const createTable = () => {
                 lastName TEXT,
                 image TEXT,
                 company TEXT,
-                page TEXT,
+                page TEXT
             );`,
             [],
             () => {
@@ -36,4 +36,4 @@ const createTable = () => {
     })
 }
 
-export {db, createTable};
+export {db, createEmployeeTable};
