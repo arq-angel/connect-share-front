@@ -21,13 +21,22 @@ export const successFormat = (response) => {
         returnData.message = "Valid Bearer token. Logged in successfully!";
     }
 
+    if (responseData && responseData.success && responseData.message == 'Token Generated') {
+        returnData.success = true;
+        returnData.data = responseData.data; // returns the object with token, expiresAt and tokenName which is deviceName - need to change in the future
+        returnData.message = responseData.message;
+    }
+
     if (responseData && responseData.success && responseData.message !== 'Valid Bearer token') {    // for all other scenarios except token validation
         returnData.success = true;
-        returnData.data = {
-            requests: responseData.requests,
-            pagination: responseData.pagination,
-            queryParams: responseData.queryParams,
-        };
+
+        if (responseData.data.length > 0) {
+            returnData.data = {
+                requests: responseData.requests,
+                pagination: responseData.pagination,
+                queryParams: responseData.queryParams,
+            };
+        }
         returnData.message = responseData.message;
     } else {
         returnData.message = responseData?.message || "Unknown success response.";
@@ -51,8 +60,7 @@ export const errorFormat = (error) => {
         }
     }
 
-    console.log("Axios Error:", error.response.status);
-
+    console.log("Axios Error Code:", error.response.status);
     let errorCode = null;
     let responseData = null;
     if (error.response) {

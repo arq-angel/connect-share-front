@@ -17,13 +17,15 @@ const Page = () => {
     const logoutMutation = useMutation({
         mutationFn: postLogout,
         onSuccess: (data) => {
-            console.log("Original success response:", data);
+            console.log("Success response:", data);
 
+            console.log("Clearing the token...")
             //  clear the stored token
             bearerTokenStore.getState().clearToken();
-            console.log("Stored Bearer Token:", bearerTokenStore.getState().token);
-            console.log("Stored Token expiration:", bearerTokenStore.getState().expiresAt);
-
+            console.log("Stored token:", {
+                token: bearerTokenStore.getState().token,
+                expiresAt: bearerTokenStore.getState().expiresAt
+            });
             setIsLoading(false);
 
             Toast.show({
@@ -34,6 +36,7 @@ const Page = () => {
                 }
             });
 
+            console.log("Redirecting user to login...")
             router.replace("/(auth)/login");
         },
         onError: (error) => {
@@ -43,9 +46,9 @@ const Page = () => {
             // Optionally log the original error for debugging purposes
             console.log('Original error:', error);
 
-            if (error == 'Token Expired.') {
+            if (error?.message == 'Unauthorized.') {
                 bearerTokenStore.getState().clearToken();
-                errorMessage = 'Token Expired. You have been logged out.';
+                errorMessage = 'Unauthorized. You have been logged out.';
                 router.replace("/(auth)/login");
             }
 
@@ -53,7 +56,7 @@ const Page = () => {
             Toast.show({
                 type: 'customError',
                 props: {
-                    text1: 'Login Failed!',
+                    text1: 'Log Out Error!',
                     text2: errorMessage,
                 }
             });
@@ -61,7 +64,7 @@ const Page = () => {
     });
 
     const handleLogout = () => {
-        console.log("Logout pressed");
+        console.log("Logout pressed.");
         setIsLoading(true);
         logoutMutation.mutate();
     }

@@ -19,15 +19,20 @@ const Page = () => {
     const loginMutation = useMutation({
         mutationFn: postLogin,
         onSuccess: (data) => {
-            console.log("Original success response:", data);
+            console.log("Success response:", data);
 
             // Handle the success case here, like saving the token
-            console.log("Token:", data.token);
-            console.log("Token Expiration:", data.expiresAt);
+            console.log("Response token:", {
+                "token" : data.data.token,  // token and expiresAt does exist
+                "expiresAt:": data.data.expiresAt
+            });
 
-            bearerTokenStore.getState().setToken(data.token, data.expiresAt);
-            console.log("Stored Bearer Token:", bearerTokenStore.getState().token);
-            console.log("Stored Token expiration:", bearerTokenStore.getState().expiresAt);
+            console.log("Storing the token...")
+            bearerTokenStore.getState().setToken(data.data.token, data.data.expiresAt);
+            console.log("Stored token:", {
+                token: bearerTokenStore.getState().token,
+                expiresAt: bearerTokenStore.getState().expiresAt
+            });
 
             setIsLoading(false);
 
@@ -39,6 +44,7 @@ const Page = () => {
                 }
             });
 
+            console.log("Redirecting user to contacts...")
             router.replace("/(home)/contacts");
         },
         onError: (error) => {
@@ -46,7 +52,11 @@ const Page = () => {
             console.log('Original error:', error);
 
             // Destructure error to get errorMessage if it exists
-            const errorMessage = 'An unknown error occurred.';
+            let errorMessage = 'An unknown error occurred.';
+
+            if (error?.debug?.code === 422) {  // Unprocessable Entity
+                errorMessage = "Invalid Credentials. Please try again.";
+            }
 
             setIsLoading(false);
             Toast.show({
@@ -60,7 +70,7 @@ const Page = () => {
     });
 
     const handleLogin = () => {
-        console.log("Login pressed...");
+        console.log("Login pressed.");
         setIsLoading(true);
 
         loginMutation.mutate(loginData);

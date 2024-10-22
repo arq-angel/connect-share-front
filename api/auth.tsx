@@ -28,43 +28,28 @@ export const postLogin = (loginData) => {
                 },
             })
         .then(response => {
-            const responseData = response.data;
-            console.log("Response:", responseData);
+            console.log("Response from server...")
+            const formattedData = successFormat(response);
 
-            // Check if response data contains success and token
-            if (responseData?.success && responseData?.data?.token && responseData?.data?.expiresAt) {
-                return {
-                    success: true,
-                    message: responseData.data.message,
-                    token: responseData.data.token,
-                    expiresAt: responseData.data.expiresAt,
-                }
-            }
+            if (formattedData?.success) return formattedData;
 
-            // Handle unexpected success response structure
-            return Promise.reject('Unexpected response from server.');
+            // handle edge cases
+            return Promise.reject({
+                success: false,
+                message: formattedData.message
+            });
         })
         .catch(error => {
-            console.log("Axios Error:", error);
-            console.log("Error:", error.response.data);
+            console.log("Error from server...")
+            const formattedData = errorFormat(error);
 
-            // Set default error message
-            let errorMessage = 'An unexpected error occurred.';
+            if (!formattedData?.success) return Promise.reject(formattedData);
 
-            // Check for specific error response
-            if (error.response) {
-                const responseData = error.response.data;
-
-                // return the error promise no matter what error we get either validation, authentication or network error
-                if (responseData.errors || responseData.message) {
-                    errorMessage = 'Invalid credentials. Please try again.';
-                }
-            } else {
-                // If there's no response from the server
-                errorMessage = 'Network error. Please check your connection.';
-            }
-
-            return Promise.reject(errorMessage);
+            // handle edge cases
+            return Promise.reject({
+                success: false,
+                message: "An error occurred, and no error message was provided."
+            });
         })
         .finally(() => {
             console.log("Login finished...")
@@ -91,43 +76,28 @@ export const postLogout = () => {
             }
         })
         .then(response => {
-            const responseData = response.data;
-            console.log("Response:", responseData)
+            console.log("Response from server...")
+            const formattedData = successFormat(response);
 
-            if (responseData?.success && responseData?.message) {
-                console.log("Success:", responseData.message);
+            if (formattedData?.success) return formattedData;
 
-                return {
-                    success: true,
-                    message: responseData.message,
-                }
-            }
-
-            return Promise.reject('Unexpected response from serve.');
-
+            // handle edge cases
+            return Promise.reject({
+                success: false,
+                message: formattedData.message
+            });
         })
         .catch(error => {
-            console.log("Axios Error:", error);
-            console.log("Error:", error.response.data);
+            console.log("Error from server...")
+            const formattedData = errorFormat(error);
 
-            // Set default error message
-            let errorMessage = 'An unexpected error occurred.';
+            if (!formattedData?.success) return Promise.reject(formattedData);
 
-            // Check for specific error response
-            if (error.response) {
-                const responseData = error.response.data;
-
-                // return the error promise no matter what error we get either validation, authentication or network error
-                if (responseData.message == 'Unauthenticated.') {
-                    errorMessage = 'Token Expired.';
-                }
-            } else {
-                // If there's no response from the server
-                errorMessage = 'Network error. Please check your connection.';
-            }
-
-            return Promise.reject(errorMessage);
-
+            // handle edge cases
+            return Promise.reject({
+                success: false,
+                message: "An error occurred, and no error message was provided."
+            });
         })
         .finally(() => {
             console.log("Logout finished...")
@@ -160,16 +130,22 @@ export const getConfirmToken = () => {
             if (formattedData?.success) return formattedData;
 
             // handle edge cases
-            return Promise.reject(formattedData.message);
+            return Promise.reject({
+                success: false,
+                message: formattedData.message,
+            });
         })
         .catch(error => {
             console.log("Error from server...")
             const formattedData = errorFormat(error);
 
-            if (!formattedData?.success) return Promise.reject(formattedData.message);
+            if (!formattedData?.success) return Promise.reject(formattedData);
 
             // handle edge cases
-            return Promise.reject("An error occurred, and no error message was provided.");
+            return Promise.reject({
+                success: false,
+                message: "An error occurred, and no error message was provided."
+            });
         })
         .finally(() => {
             console.log("Confirm token finished...")

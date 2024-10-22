@@ -48,6 +48,7 @@ const InitialLayout = () => {
                 });
             }
         } else {
+            console.log("Redirecting user to login...")
             Promise.resolve().then(() => {
                 setIsLoading(false);
                 router.push("/(auth)/login");
@@ -59,22 +60,22 @@ const InitialLayout = () => {
         mutationFn: getConfirmToken,
         onSuccess: (data) => {
             console.log("Success response:", data);
-            console.log("Redirecting user to contacts...")
+            console.log("Redirecting user to contacts...");
 
-            // new way of state handling instead of setTimeout
+            // Handle state updates and routing after successful token validation
             Promise.resolve().then(() => {
                 setIsLoading(false);
                 router.replace("/(home)/contacts");
             });
-
         },
         onError: (error) => {
             console.log("Original error:", error);
 
-            // Default error message if no specific message is available
-            let errorMessage = 'An unknown error occurred. Please login again.';
+            // Extract error message from the new error format structure
+            let errorMessage = error.message || 'An unknown error occurred. Please login again.';
 
-            if (error === 'Token Expired.') {
+            // Handle specific case for token expiration
+            if (errorMessage === 'Unauthorized.') {
                 bearerTokenStore.getState().clearToken();
                 errorMessage = 'Token Expired. You have been logged out.';
 
@@ -86,29 +87,32 @@ const InitialLayout = () => {
                     }
                 });
 
+                // Redirect to login page after token expiration
                 Promise.resolve().then(() => {
                     setIsLoading(false);
                     router.push("/(auth)/login");
                 });
             } else {
-                console.log("Unhandled error:", error);
+                console.log("Unhandled error:", errorMessage);
 
+                // Display a toast for unhandled errors using the returned error message
                 Toast.show({
                     type: 'customError',
                     props: {
                         text1: 'Login Failed!',
-                        text2: errorMessage,  // Show the default message
+                        text2: errorMessage,  // Use the error message from the errorFormat structure
                     }
                 });
 
+                // Redirect to login page on other errors
                 Promise.resolve().then(() => {
                     setIsLoading(false);
                     router.push("/(auth)/login");
                 });
             }
         }
+    });
 
-    })
 
     if (isLoading) {
         return (
