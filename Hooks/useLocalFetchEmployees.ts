@@ -32,6 +32,7 @@ export const useLocalFetchEmployees = (searchTerm = '') => {
         data,
         error,
         isLoading,
+        isFetching,
         hasNextPage,
         fetchNextPage,
         isFetchingNextPage,

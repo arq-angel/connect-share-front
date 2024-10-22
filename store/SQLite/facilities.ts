@@ -1,6 +1,6 @@
 import {setupDatabaseInstance} from "./database";
 
-const getEmployeesFromDB = async (perPage = 25, page = 1, searchQuery = '') => {
+const getFacilitiesFromDB = async (perPage = 25, page = 1, searchQuery = '') => {
     try {
         const db = await setupDatabaseInstance();
 
@@ -10,43 +10,36 @@ const getEmployeesFromDB = async (perPage = 25, page = 1, searchQuery = '') => {
         // searchTerm for all fields
         const searchTerm = `%${searchQuery}%`;
 
-        // First, get the total count of employees that match the search
+        // First, get the total count of facilities that match the search
         const countQuery = `
-            SELECT COUNT(*) as total FROM employees
-            WHERE firstName LIKE ?
-            OR middleName LIKE ?
-            OR lastName LIKE ?
-            OR company LIKE ?;
+            SELECT COUNT(*) as total FROM facilities
+            WHERE name LIKE ?;
         `;
 
         const totalCountResult = await db?.getAllSync(countQuery, [
-            searchTerm, searchTerm, searchTerm, searchTerm
+            searchTerm
         ]);
 
         const totalCount = totalCountResult?.[0]?.total || 0; // Total number of matching records
 
         // construct the SQL query with pagination and search functionality
         let query = `
-            SELECT * FROM employees
-            WHERE firstName LIKE ?
-            OR middleName LIKE ?
-            OR lastName LIKE ?
-            OR company LIKE ?
-            LIMIT ? OFFSET ?;
+            SELECT * FROM facilities
+            WHERE name LIKE ?;
         `;
 
         // Execute the query with the provided parameters
-        const employeeRows = await db?.getAllSync(query, [
-            searchTerm, searchTerm, searchTerm, searchTerm, perPage, offset
+        const facilitiesRows = await db?.getAllSync(query, [
+            searchTerm, perPage, offset
         ])
 
         // Log the fetched rows for visibility
-        if (employeeRows?.length) {
-            employeeRows?.forEach(row => {
-                // console.log(`ID: ${row.id}, Name: ${row.firstName} ${row.middleName} ${row.lastName}, Company: ${row.company}`);
+        if (facilitiesRows?.length) {
+            facilitiesRows?.forEach(row => {
+                console.log(`ID: ${row.id}, Company Name: ${row.name}`);
             });
         } else {
-            console.log('No employees found.');
+            console.log('No facilities found.');
         }
 
         // Calculate pagination details
@@ -54,7 +47,7 @@ const getEmployeesFromDB = async (perPage = 25, page = 1, searchQuery = '') => {
         const pagination = {
             currentPage: page,
             perPage: perPage,
-            totalEmployees: totalCount,
+            totalFacilities: totalCount,
             totalPages: totalPages,
             nextPage: page < totalPages ? page + 1 : null, // If there's a next page, otherwise null
             prevPage: page > 1 ? page - 1 : null, // If there's a previous page, otherwise null
@@ -63,9 +56,9 @@ const getEmployeesFromDB = async (perPage = 25, page = 1, searchQuery = '') => {
         // Return the success response with pagination and query params
         return {
             success: true,
-            message: "Employees retrieved successfully.",
+            message: "Facilities retrieved successfully.",
             data: {
-                employees: employeeRows,
+                facilities: facilitiesRows,
                 pagination: pagination,
                 queryParams: {
                     page: page,
@@ -75,37 +68,33 @@ const getEmployeesFromDB = async (perPage = 25, page = 1, searchQuery = '') => {
             }
         };
     } catch (error) {
-        console.log("Error fetching employees from the database:", error);
+        console.log("Error fetching facilities from the database:", error);
 
         return {
             success: false,
-            message: "Error fetching employees from the database.",
+            message: "Error fetching facilities from the database.",
             error: error
         };
     }
 }
 
-const insertEmployee = async (employee, page) => {
+const insertFacility = async (facility) => {
     try {
         const db = await setupDatabaseInstance();
 
-        let query = `INSERT INTO employees (firstName, middleName, lastName, image, company, page) VALUES (?, ?, ?, ?, ?, ?)`;
+        let query = `INSERT INTO facilities ( name, image) VALUES ( ?, ?)`;
 
         await db?.runAsync(query, [
-            employee.firstName,
-            employee.middleName,
-            employee.lastName,
-            employee.image,
-            employee.company,
-            page
+            facility.name,
+            facility.image
         ]);
 
-        // console.log("Inserted employee");
+        // console.log("Inserted facility");
         return true;
     } catch (error) {
-        console.error('Error inserting employees:', error);
+        console.error('Error inserting facilities:', error);
         return false;
     }
 }
 
-export {getEmployeesFromDB, insertEmployee};
+export {getFacilitiesFromDB, insertFacility};

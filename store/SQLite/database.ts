@@ -32,10 +32,28 @@ const setupEmployeesTable = async () => {
                 page TEXT
               );
             `);
-        // console.log("Created new employees table");
+        console.log("Created new employees table");
     } catch (error) {
         console.log("Error creating the employees table:", error);
     }
 }
 
-export {setupDatabaseInstance, setupEmployeesTable};
+const setupFacilities = async () => {
+    try {
+        const db = await setupDatabaseInstance();
+        db?.execAsync(`
+            PRAGMA journal_mode = WAL;
+            DROP TABLE IF EXISTS facilities;
+            CREATE TABLE IF NOT EXISTS facilities (
+                id INTEGER PRIMARY KEY NOT NULL, 
+                name TEXT,
+                image TEXT
+              );
+            `);
+        console.log("Created new facilities table");
+    } catch (error) {
+        console.log("Error creating the facilities table:", error);
+    }
+}
+
+export {setupDatabaseInstance, setupEmployeesTable, setupFacilities};

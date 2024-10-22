@@ -2,9 +2,10 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getEmployeesFromAPI } from "../api/contact";
 import { insertEmployee } from "../store/SQLite/employees";
 import { setupEmployeesTable } from "../store/SQLite/database";
-import { lastFetchInfoStore } from "../store/mmkv/lastFetchInfo";
+import { lastContactFetchInfoStore } from "../store/mmkv/lastContactFetchInfo";
 import { useEffect, useState } from "react";
-import { hasBeenMoreThan30Minutes } from "../Helpers/appHelpers";
+import {getISOStringTime, hasBeenMoreThan30Minutes} from "../Helpers/appHelpers";
+import Toast from "react-native-toast-message";
 
 export const useFetchEmployees = () => {
     const [isInserting, setIsInserting] = useState(false); // Track database insertion
@@ -15,7 +16,7 @@ export const useFetchEmployees = () => {
 
     // Check if more than 30 minutes have passed since the last fetch
     const isFetchRequired = () => {
-        const lastFetchTime = lastFetchInfoStore.getState().lastFetchTime;
+        const lastFetchTime = lastContactFetchInfoStore.getState().lastFetchTime;
         return hasBeenMoreThan30Minutes(lastFetchTime); // Use the helper function to determine if fetch is needed
     };
 
@@ -24,7 +25,7 @@ export const useFetchEmployees = () => {
         if (isFetchRequired()) {
             setShouldFetch(true);
         } else {
-            console.log("Last fetch was less than 30 minutes ago. Skipping fetch.");
+            console.log("Last employees fetch was less than 30 minutes ago. Skipping fetch.");
             setShouldFetch(false);
         }
     }, []); // This will check fetch requirement only once on mount
@@ -90,10 +91,19 @@ export const useFetchEmployees = () => {
                     console.log("All pages fetched.");
 
                     console.log("Saving fetch info...");
-                    const fetchTime = new Date().toLocaleString();
+                    const fetchTime = getISOStringTime();
                     const fetchMessage = latestPage.message || "Employees retrieved successfully.";
-                    lastFetchInfoStore.getState().setLastFetchInfo(fetchTime, true, fetchMessage, false, null);
-                    console.log("Last Fetch Info: ", { time: lastFetchInfoStore.getState().lastFetchTime, message: lastFetchInfoStore.getState().message });
+                    lastContactFetchInfoStore.getState().setLastFetchInfo(fetchTime, true, fetchMessage, false, null);
+                    console.log("Last Fetch Info: ", { time: lastContactFetchInfoStore.getState().lastFetchTime, message: lastContactFetchInfoStore.getState().message });
+
+                    Toast.show({
+                        type: 'customSuccess',
+                        props: {
+                            text1: 'Fetched Successfully!',
+                            text2: 'Contacts have been successfully updated.',
+                        }
+                    });
+
                 } else if (hasNextPage && !isFetchingNextPage) {
                     console.log(`Fetching NextPage: ${nextPage}`); // Log NextPage only once per fetch
                     await fetchNextPage(); // Fetch next page only after the current page is processed
@@ -103,10 +113,10 @@ export const useFetchEmployees = () => {
                 console.error('Error inserting employees:', error);
 
                 // Save error info
-                const fetchTime = new Date().toLocaleString();
+                const fetchTime = getISOStringTime();
                 const errorMessage = error.message || "Unknown error occurred.";
-                lastFetchInfoStore.getState().setLastFetchInfo(fetchTime, false, null, true, errorMessage); // Save error state
-                console.log("Error Fetch Info: ", { time: lastFetchInfoStore.getState().lastFetchTime, error: lastFetchInfoStore.getState().error });
+                lastContactFetchInfoStore.getState().setLastFetchInfo(fetchTime, false, null, true, errorMessage); // Save error state
+                console.log("Error Fetch Info: ", { time: lastContactFetchInfoStore.getState().lastFetchTime, error: lastContactFetchInfoStore.getState().error });
 
             } finally {
                 setIsInserting(false); // Mark insertion as done
@@ -125,7 +135,7 @@ export const useFetchEmployees = () => {
         console.log("Manual refetch triggered");
 
         // Clear the last fetch info and reset state before triggering the refetch
-        lastFetchInfoStore.getState().clearLastFetchInfo(); // Clear the last fetch info
+        lastContactFetchInfoStore.getState().clearLastFetchInfo(); // Clear the last fetch info
         setCurrentPage(0); // Reset the current page
         setPreviousPage(null); // Reset the previous page
 

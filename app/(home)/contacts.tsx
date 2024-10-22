@@ -10,7 +10,7 @@ import {
     RefreshControl
 } from 'react-native';
 import {useFetchEmployees} from "../../Hooks/useFetchEmployees";
-import {lastFetchInfoStore} from "../../store/mmkv/lastFetchInfo";
+import {lastContactFetchInfoStore} from "../../store/mmkv/lastContactFetchInfo";
 import {hasBeenMoreThan30Minutes} from "../../Helpers/appHelpers";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faFilter, faRotate} from "@fortawesome/free-solid-svg-icons";
@@ -20,13 +20,13 @@ import {useLocalFetchEmployees} from "../../Hooks/useLocalFetchEmployees";
 import ContactItem from "../../components/ContactItem";
 import {useQueryClient} from "@tanstack/react-query";
 import useDebounce from "../../Hooks/useDebounce";
+import {setupDatabaseInstance} from "../../store/SQLite/database";
 
 const Page = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isRefreshing, setIsRefreshing] = useState(false);
     const queryClient = useQueryClient();
     const debouncedSearchQuery = useDebounce(searchQuery, 500); // Debounce search query with a 500ms delay
-
 
     /** fetch using remote api start */
 
@@ -35,7 +35,7 @@ const Page = () => {
 
     // Check if more than 30 minutes have passed since the last fetch
     const isFetchRequired = () => {
-        const lastFetchTime = lastFetchInfoStore.getState().lastFetchTime;
+        const lastFetchTime = lastContactFetchInfoStore.getState().lastFetchTime;
         return hasBeenMoreThan30Minutes(lastFetchTime); // Use the helper function to determine if fetch is needed
     };
 
@@ -57,7 +57,7 @@ const Page = () => {
     // Fetching logic from the useLocalFetchEmployees hook
     const { data, error, status, fetchNextPage, hasNextPage, refetchLocal, isFetchingNextPage } = useLocalFetchEmployees(debouncedSearchQuery);
 
-    const allContacts = data ? data.pages.flatMap(page => page.data.data.employees) : [];
+    const allContacts = data ? data.pages.flatMap(page => page.data?.data?.employees) : [];
 
     const handleTextChange = (text) => {
         setSearchQuery(text);
@@ -68,8 +68,12 @@ const Page = () => {
         setIsRefreshing(true);
         try {
             console.log("Refreshing local contacts...");
-            queryClient.removeQueries(["contacts", "local"]);
-            refetchLocal(["contacts", "local"]);
+
+            // tp gracefully show the activity indicator on refresh
+            Promise.resolve().then(() => {
+                queryClient.removeQueries(["contacts", "local"]);
+                refetchLocal(["contacts", "local"]);
+            })
         } catch (error) {
             console.error("Error fetching contacts:", error);
         } finally {
@@ -133,7 +137,8 @@ const Page = () => {
                         <FlatList
                             data={allContacts}
                             renderItem={({item}) => (
-                                <ContactItem item={item}/>
+                                // <ContactItem item={item}/>
+                                <></>
                             )}
                             keyExtractor={(item, index) => index.toString()}
                             onEndReached={() => {
@@ -143,7 +148,7 @@ const Page = () => {
                                     fetchNextPage();
                                 }
                             }}
-                            onEndReachedThreshold={0.1} // Trigger when within 10% of the bottom
+                            onEndReachedThreshold={0.5} // Trigger when within 10% of the bottom
                             ListFooterComponent={() =>
                                 isFetchingNextPage ? (
                                     <ActivityIndicator size="large" color={Colors.primary}/>

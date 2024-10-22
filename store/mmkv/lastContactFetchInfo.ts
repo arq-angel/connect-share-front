@@ -2,7 +2,7 @@ import {create} from "zustand/react";
 import {createJSONStorage, persist} from "zustand/middleware";
 import zustandMMKVStorage from "./zustand";
 
-interface LastFetchInfoStore {
+interface LastContactFetchInfoStore {
     lastFetchTime: string | null;
     wasSuccess: boolean | null;
     message: string | null;
@@ -13,7 +13,7 @@ interface LastFetchInfoStore {
 }
 
 // Define the Zustand store with persistence
-export const lastFetchInfoStore = create<LastFetchInfoStore>()(
+export const lastContactFetchInfoStore = create<LastContactFetchInfoStore>()(
     persist(
         (set) => ({
             lastFetchTime: null,
@@ -30,7 +30,7 @@ export const lastFetchInfoStore = create<LastFetchInfoStore>()(
                 set({lastFetchTime: null, wasSuccess: null, message: null, wasError: null, error: null}),
         }),
         {
-            name: 'last-fetch-info', // Storage key for MMKV
+            name: 'last-contact-fetch-info', // Storage key for MMKV
             storage: createJSONStorage(() => zustandMMKVStorage), // Using localStorage to persist the token
             // storage: zustandMMKVStorage, // Directly use zustandMMKVStorage
         }
