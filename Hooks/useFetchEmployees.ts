@@ -40,7 +40,7 @@ export const useFetchEmployees = () => {
         isLoading,
         refetch,
     } = useInfiniteQuery({
-        queryKey: ['employees', 'infinite'],
+        queryKey: ['employees', 'live'],
         queryFn: ({ pageParam = 1 }) => getEmployeesFromAPI({ page: pageParam }), // Pass pageParam to fetch each page
         getNextPageParam: (lastPage) => {
             const nextPage = lastPage.data?.pagination?.nextPage;
@@ -136,6 +136,6 @@ export const useFetchEmployees = () => {
     return {
         isLoading,
         isFetchingNextPage,
-        refetch: handleRefetch,
+        refetchRemote: handleRefetch,
     };
 };

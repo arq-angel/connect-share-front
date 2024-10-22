@@ -6,7 +6,7 @@ const ContactItem = ({item, containerStyles}) => {
         <TouchableOpacity className={`mb-2 mx-3 py-1 border-b border-gray-200 ${containerStyles}`}>
             <View className="flex-row justify-between items-center ">
                 <View className="flex-row items-center">
-                    {item.image ? (
+                    {!item.image ? (
                         <Image
                             source={{uri: item.image}}
                             className="rounded-full mr-3"
@@ -15,7 +15,7 @@ const ContactItem = ({item, containerStyles}) => {
                     ) : (
                         <View className="bg-gray-300 rounded-full mr-3 justify-center items-center" style={{ width: 50, height: 50 }}>
                             <Text className="text-lg font-bold">
-                                {`${item.firstName[0]}${item.lastName[0]}`}
+                                {item.firstName[0]}{item.lastName[0]}
                             </Text>
                         </View>
                     )}
@@ -29,12 +29,10 @@ const ContactItem = ({item, containerStyles}) => {
                         {item.assignments && item.assignments.length > 0 && (
                             <View key={0} className="flex-shrink-0">
                                 <Text className="text-black font-semibold">
-                                    {item.assignments[0].facility ? item.assignments[0].facility : ''}
-                                    {item.assignments[0].facility && item.assignments[0].department ? ', ' : ''}
-                                    {item.assignments[0].department ? item.assignments[0].department : ''}
+
                                 </Text>
                                 <Text className="text-black">
-                                    {item.assignments[0].jobTitle ? item.assignments[0].jobTitle : ''}
+
                                 </Text>
                             </View>
                         )}
