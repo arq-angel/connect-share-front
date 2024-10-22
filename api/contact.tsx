@@ -1,4 +1,4 @@
-import {bearerTokenStore} from "../store/bearerTokenStore";
+import {bearerTokenStore} from "../store/mmkv/bearerTokenStore";
 import axios from "axios";
 
 const siteToken = '7|ddVwAWCcbmI9TrUIwnSJAqO7K7DJY6ypsX5Fq5pvad7907ac';

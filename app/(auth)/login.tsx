@@ -4,7 +4,7 @@ import {useRouter} from "expo-router";
 import Colors from "../../constants/Colors";
 import {postLogin} from "../../api/auth";
 import {useMutation} from "@tanstack/react-query";
-import {bearerTokenStore} from "../../store/bearerTokenStore";
+import {bearerTokenStore} from "../../store/mmkv/bearerTokenStore";
 import Toast from "react-native-toast-message";
 
 const Page = () => {

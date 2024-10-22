@@ -1,7 +1,9 @@
-import {bearerTokenStore} from "../store/bearerTokenStore";
+import {bearerTokenStore} from "../store/mmkv/bearerTokenStore";
 import axios from "axios";
+import {errorFormat, successFormat} from "../Helpers/apiHelpers";
 
 const siteToken = '7|ddVwAWCcbmI9TrUIwnSJAqO7K7DJY6ypsX5Fq5pvad7907ac';
+// const siteToken = '';
 const baseUrl = 'https://myapplib.com/api/v1';
 
 export const postLogin = (loginData) => {
@@ -152,43 +154,22 @@ export const getConfirmToken = () => {
             }
         })
         .then(response => {
-            const responseData = response.data;
-            console.log("Response:", responseData)
+            console.log("Response from server...")
+            const formattedData = successFormat(response);
 
-            if (responseData?.success && responseData?.message) {
-                console.log("Success:", responseData.message);
+            if (formattedData?.success) return formattedData;
 
-                return {
-                    success: true,
-                    message: responseData.message,
-                }
-            }
-
-            return Promise.reject('Unexpected response from serve.');
-
+            // handle edge cases
+            return Promise.reject(formattedData.message);
         })
         .catch(error => {
-            console.log("Axios Error:", error);
-            console.log("Error:", error.response.data);
+            console.log("Error from server...")
+            const formattedData = errorFormat(error);
 
-            // Set default error message
-            let errorMessage = 'An unexpected error occurred.';
+            if (!formattedData?.success) return Promise.reject(formattedData.message);
 
-            // Check for specific error response
-            if (error.response) {
-                const responseData = error.response.data;
-
-                // return the error promise no matter what error we get either validation, authentication or network error
-                if (responseData.message == 'Unauthenticated.') {
-                    errorMessage = 'Token Expired.';
-                }
-            } else {
-                // If there's no response from the server
-                errorMessage = 'Network error. Please check your connection.';
-            }
-
-            return Promise.reject(errorMessage);
-
+            // handle edge cases
+            return Promise.reject("An error occurred, and no error message was provided.");
         })
         .finally(() => {
             console.log("Confirm token finished...")

@@ -6,7 +6,7 @@ import {useEffect, useState} from "react";
 import Toast from "react-native-toast-message";
 import {toastConfig} from "../components/customToasts";
 import {getConfirmToken} from "../api/auth";
-import {bearerTokenStore} from "../store/bearerTokenStore";
+import {bearerTokenStore} from "../store/mmkv/bearerTokenStore";
 import {View, ActivityIndicator} from "react-native";
 import Colors from "../constants/Colors";
 
@@ -15,19 +15,22 @@ const queryClient = new QueryClient();
 const InitialLayout = () => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(true);
-
     const bearerToken = bearerTokenStore.getState().token;
     const tokenExpiresAt = bearerTokenStore.getState().expiresAt;
-    console.log("Stored token:", bearerToken);
-    console.log("Token expiration:", tokenExpiresAt); // implement token expiration check in the future
 
     useEffect(() => {
+        console.log("Token validation start...")
+        console.log("Stored token:", {
+            token: bearerToken,
+            expiresAt: tokenExpiresAt
+        });
+
         if (bearerToken && tokenExpiresAt) {
             const currentTime = new Date().getTime();
             const tokenExpiryTime = new Date(tokenExpiresAt).getTime();
 
             if (currentTime < tokenExpiryTime) {
-                console.log("Validating Token.");
+                console.log("Validating Token...");
                 confirmTokenMutation.mutate();
             } else {
                 console.log("Token has expired.");
@@ -55,7 +58,8 @@ const InitialLayout = () => {
     const confirmTokenMutation = useMutation({
         mutationFn: getConfirmToken,
         onSuccess: (data) => {
-            console.log("Original success response:", data);
+            console.log("Success response:", data);
+            console.log("Redirecting user to contacts...")
 
             // new way of state handling instead of setTimeout
             Promise.resolve().then(() => {

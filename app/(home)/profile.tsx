@@ -7,7 +7,7 @@ import Colors from "../../constants/Colors";
 import Toast from "react-native-toast-message";
 import {useMutation} from "@tanstack/react-query";
 import {postLogout} from "../../api/auth";
-import {bearerTokenStore} from "../../store/bearerTokenStore";
+import {bearerTokenStore} from "../../store/mmkv/bearerTokenStore";
 import {UserLoggedInContext} from "../../context/UserLoggedIn";
 
 const Page = () => {
