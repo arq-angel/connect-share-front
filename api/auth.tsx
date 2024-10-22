@@ -33,7 +33,7 @@ export const postLogin = (loginData) => {
 
             if (formattedData?.success) return formattedData;
 
-            // handle edge cases
+            // fallback response - I am returning new object here instead of utilising the object formattedData returns to handle error in successFormat
             return Promise.reject({
                 success: false,
                 message: formattedData.message
@@ -45,7 +45,7 @@ export const postLogin = (loginData) => {
 
             if (!formattedData?.success) return Promise.reject(formattedData);
 
-            // handle edge cases
+            // fallback response
             return Promise.reject({
                 success: false,
                 message: "An error occurred, and no error message was provided."
@@ -81,7 +81,7 @@ export const postLogout = () => {
 
             if (formattedData?.success) return formattedData;
 
-            // handle edge cases
+            // fallback response - I am returning new object here instead of utilising the object formattedData returns to handle error in successFormat
             return Promise.reject({
                 success: false,
                 message: formattedData.message
@@ -93,7 +93,7 @@ export const postLogout = () => {
 
             if (!formattedData?.success) return Promise.reject(formattedData);
 
-            // handle edge cases
+            // fallback response
             return Promise.reject({
                 success: false,
                 message: "An error occurred, and no error message was provided."
@@ -129,7 +129,7 @@ export const getConfirmToken = () => {
 
             if (formattedData?.success) return formattedData;
 
-            // handle edge cases
+            // fallback response - I am returning new object here instead of utilising the object formattedData returns to handle error in successFormat
             return Promise.reject({
                 success: false,
                 message: formattedData.message,
@@ -141,7 +141,7 @@ export const getConfirmToken = () => {
 
             if (!formattedData?.success) return Promise.reject(formattedData);
 
-            // handle edge cases
+            // fallback response
             return Promise.reject({
                 success: false,
                 message: "An error occurred, and no error message was provided."

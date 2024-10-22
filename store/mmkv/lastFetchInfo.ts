@@ -24,10 +24,10 @@ export const lastFetchInfoStore = create<LastFetchInfoStore>()(
 
             // Method to set fetch information
             setLastFetchInfo: (lastFetchTime: string, wasSuccess: boolean | null, message: string | null, wasError: boolean | null, error: string | null) =>
-                set({ lastFetchTime, wasSuccess, message, wasError, error }),
+                set({lastFetchTime, wasSuccess, message, wasError, error}),
 
             clearLastFetchInfo: () =>
-                set({ lastFetchTime: null, wasSuccess: null, message: null, wasError: null, error: null }),
+                set({lastFetchTime: null, wasSuccess: null, message: null, wasError: null, error: null}),
         }),
         {
             name: 'last-fetch-info', // Storage key for MMKV

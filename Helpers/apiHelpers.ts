@@ -30,11 +30,11 @@ export const successFormat = (response) => {
     if (responseData && responseData.success && responseData.message !== 'Valid Bearer token') {    // for all other scenarios except token validation
         returnData.success = true;
 
-        if (responseData.data.length > 0) {
+        if (responseData?.data?.requests) {
             returnData.data = {
-                requests: responseData.requests,
-                pagination: responseData.pagination,
-                queryParams: responseData.queryParams,
+                requests: responseData?.data?.requests,
+                pagination: responseData?.data?.pagination,
+                queryParams: responseData?.data?.queryParams,
             };
         }
         returnData.message = responseData.message;

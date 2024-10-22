@@ -3,9 +3,24 @@ import {Tabs} from "expo-router";
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAddressBook, faBuilding, faProjectDiagram, faStar, faUserTie} from "@fortawesome/free-solid-svg-icons";
 import Colors from "../../constants/Colors";
-import {Text} from "react-native";
+import {ActivityIndicator, Text, View} from "react-native";
+import {useFetchEmployees} from "../../Hooks/useFetchEmployees";
 
 const HomeLayout = () => {
+
+    const {
+        data,
+        isLoading,
+        isError,
+        error,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = useFetchEmployees();
+
+    if (isLoading) return <View className="flex-1 justify-center items-center"><View className="flex-col"><ActivityIndicator size="large" color={Colors.primary}/><Text>Loading...</Text></View></View>;
+    if (error) return <View className="flex-1 justify-center items-center"><View className="flex-col"><Text>Error loading employees.</Text></View></View>;
+
     return (
         <Tabs
             screenOptions={{
