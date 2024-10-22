@@ -1,54 +1,45 @@
-import {db} from "./database";
+import {setupDatabaseInstance} from "./database";
 
-const saveEmployees = async (employees, page) => {
-
+const getEmployeesFromDB = async () => {
     try {
-        for (const employee of employees) {
-            await db.runAsync(
-                `INSERT INTO employees (firstName, middleName, lastName, image, company, page)
-                VALUES (?, ?, ?, ?, ?, ?)`,
-                [
-                    employee.firstName,
-                    employee.middleName,
-                    employee.lastName,
-                    employee.image,
-                    employee.company,
-                    page,
-                ]
-            );
-            console.log(`Employee added: ${employee.firstName} ${employee.middleName} ${employee.lastName}`);
+        const db = await setupDatabaseInstance();
+
+        const employeeRows = await db?.getAllAsync("SELECT * FROM employees");
+
+        // Log the fetched rows for visibility
+        if (employeeRows?.length) {
+            employeeRows?.forEach(row => {
+                console.log(`ID: ${row.id}, Name: ${row.firstName} ${row.middleName} ${row.lastName}, Company: ${row.company}`);
+            });
+        } else {
+            console.log('No employees found.');
         }
-        console.log("All employees have been added successfully");
-    } catch (error) {
-        console.log("Error inserting employees: ", error);
-    }
-};
 
-const fetchPaginatedEmployees = async (page = 1, perPage = 25) => {
-    const offset = (page - 1) * perPage;
-
-    try {
-        const employees = await db.getAllAsync(
-            `SELECT * FROM employees LIMIT ? OFFSET ?`,
-            [perPage, offset],
-        );
-        console.log("Employees retrieved successfully");
-        return employees;
+        return employeeRows;
     } catch (error) {
-        console.log("Error fetching employees : ", error);
+        console.log("Error fetching employees from the database:", error);
     }
 }
 
-const clearEmployeesTable = async () => {
+const insertEmployee = async (employee, page) => {
     try {
-        await db.runAsync(
-            `DELETE FROM employees`
-        )
-        console.log("All employees deleted successfully");
+        const db = await setupDatabaseInstance();
+
+        let query = `INSERT INTO employees (firstName, middleName, lastName, image, company, page) VALUES (?, ?, ?, ?, ?, ?)`;
+
+        await db?.runAsync(query, [
+            employee.firstName,
+            employee.middleName,
+            employee.lastName,
+            employee.image,
+            employee.company,
+            page
+        ]);
+
+        // console.log("Inserted employee");
     } catch (error) {
-        console.log("Error deleting all employees: ", error)
+        console.error('Error inserting employees:', error);
     }
 }
 
-
-export {saveEmployees, fetchPaginatedEmployees, clearEmployeesTable};
+export {getEmployeesFromDB, insertEmployee};

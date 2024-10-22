@@ -1,31 +1,41 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = await SQLite.openDatabaseAsync('mydb.db');
+let dbInstance = null; // Shared variable to store the database instance
 
-const createEmployeeTable = async () => {
-    console.log("Creating employee table...");
-    await db.execAsync(
-        // the DROP statement drops the table so the id starts from 1 everytime by creating a new table
-        `DROP TABLE IF EXISTS employees;         
-         CREATE TABLE IF NOT EXISTS employees (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            firstName TEXT,
-            middleName TEXT,
-            lastName TEXT,
-            image TEXT,
-            company TEXT,
-            page INTEGER,
-        );`,
-    )
-        .then((result) => {
-            console.log("employees table created successfully");
-        })
-        .catch((err) => {
-            console.log("employees table creation failed: ", err);
-        })
-        .finally(() => {
-            console.log("Creating employee table finished...");
-        })
+const setupDatabaseInstance = async () => {
+    if (!dbInstance) {
+        try {
+            // Open the database asynchronously
+            dbInstance = await SQLite.openDatabaseAsync('my_db');
+            // console.log("Connected to database");
+        } catch (error) {
+            console.error('Error setting up the database:', error);
+        }
+    }
+    return dbInstance;
 }
 
-export {db, createEmployeeTable};
+
+const setupEmployeesTable = async () => {
+    try {
+        const db = await setupDatabaseInstance();
+        db?.execAsync(`
+            PRAGMA journal_mode = WAL;
+            DROP TABLE IF EXISTS employees;
+            CREATE TABLE IF NOT EXISTS employees (
+                id INTEGER PRIMARY KEY NOT NULL, 
+                firstName TEXT,
+                middleName TEXT,
+                lastName TEXT,
+                image TEXT,
+                company TEXT,
+                page TEXT
+              );
+            `);
+        // console.log("Created new employees table");
+    } catch (error) {
+        console.log("Error creating the employees table:", error);
+    }
+}
+
+export {setupDatabaseInstance, setupEmployeesTable};

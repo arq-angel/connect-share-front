@@ -9,6 +9,7 @@ import {getConfirmToken} from "../api/auth";
 import {bearerTokenStore} from "../store/mmkv/bearerTokenStore";
 import {View, ActivityIndicator} from "react-native";
 import Colors from "../constants/Colors";
+import {useFetchEmployees} from "../Hooks/useFetchEmployees";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ const InitialLayout = () => {
     const [isLoading, setIsLoading] = useState(true);
     const bearerToken = bearerTokenStore.getState().token;
     const tokenExpiresAt = bearerTokenStore.getState().expiresAt;
+
 
     useEffect(() => {
         console.log("Token validation start...")

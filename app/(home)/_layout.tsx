@@ -5,21 +5,36 @@ import {faAddressBook, faBuilding, faProjectDiagram, faStar, faUserTie} from "@f
 import Colors from "../../constants/Colors";
 import {ActivityIndicator, Text, View} from "react-native";
 import {useFetchEmployees} from "../../Hooks/useFetchEmployees";
+import {setupEmployeesTable} from "../../store/SQLite/database";
+import {getEmployeesFromDB, insertEmployee, insertFiveEmployees} from "../../store/SQLite/employees";
 
 const HomeLayout = () => {
 
-    const {
-        data,
-        isLoading,
-        isError,
-        error,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-    } = useFetchEmployees();
+    // setupEmployeesTable();
+    // const employeesData = [
+    //     { firstName: 'John', middleName: 'A.', lastName: 'Doe', image: 'image1.png', company: 'Company A' },
+    //     { firstName: 'Jane', middleName: 'B.', lastName: 'Smith', image: 'image2.png', company: 'Company B' },
+    //     { firstName: 'Jim', middleName: 'C.', lastName: 'Beam', image: 'image3.png', company: 'Company C' },
+    //     { firstName: 'Jack', middleName: 'D.', lastName: 'Daniels', image: 'image4.png', company: 'Company D' },
+    //     { firstName: 'Jill', middleName: 'E.', lastName: 'Stewart', image: 'image5.png', company: 'Company E' },
+    // ];
+    // employeesData.map(employee => {
+    //     insertEmployee(employee, 1);
+    // })
+    // getEmployeesFromDB();
 
-    if (isLoading) return <View className="flex-1 justify-center items-center"><View className="flex-col"><ActivityIndicator size="large" color={Colors.primary}/><Text>Loading...</Text></View></View>;
-    if (error) return <View className="flex-1 justify-center items-center"><View className="flex-col"><Text>Error loading employees.</Text></View></View>;
+    // const {
+    //     data,
+    //     isLoading,
+    //     isError,
+    //     error,
+    //     fetchNextPage,
+    //     hasNextPage,
+    //     isFetchingNextPage,
+    // } = useFetchEmployees();
+    //
+    // if (isLoading) return <View className="flex-1 justify-center items-center"><View className="flex-col"><ActivityIndicator size="large" color={Colors.primary}/><Text>Loading...</Text></View></View>;
+    // if (error) return <View className="flex-1 justify-center items-center"><View className="flex-col"><Text>Error loading employees.</Text></View></View>;
 
     return (
         <Tabs
