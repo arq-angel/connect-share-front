@@ -44,7 +44,7 @@ if (getRNMinorVersion() >= 75) {
   }
 }
 
-rootProject.name = 'connect_share_v2'
+rootProject.name = 'connectShareV2'
 
 dependencyResolutionManagement {
   versionCatalogs {

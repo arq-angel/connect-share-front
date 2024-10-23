@@ -30,13 +30,14 @@ const getFacilitiesFromDB = async (perPage = 25, page = 1, searchQuery = '') => 
 
         // Execute the query with the provided parameters
         const facilitiesRows = await db?.getAllSync(query, [
-            searchTerm, perPage, offset
+            searchTerm
+            // , perPage, offset        // its not implemented for facilities
         ])
 
         // Log the fetched rows for visibility
         if (facilitiesRows?.length) {
             facilitiesRows?.forEach(row => {
-                console.log(`ID: ${row.id}, Company Name: ${row.name}`);
+                // console.log(`ID: ${row.id}, Company Name: ${row.name}`);
             });
         } else {
             console.log('No facilities found.');

@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "connect_share_v2",
-    "slug": "connect_share_v2",
+    "name": "connectShareV2",
+    "slug": "connectsharev2",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "myapp",
+    "scheme": "connectsharev2",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -14,14 +14,35 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.test.connectsharev2"
+      "bundleIdentifier": "com.test.connectsharev2",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": ["connectsharev2"]
+          }
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.test.connectsharev2"
+      "package": "com.test.connectsharev2",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "connectsharev2"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png",

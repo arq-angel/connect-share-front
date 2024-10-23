@@ -17,10 +17,9 @@ import {faFilter, faRotate} from "@fortawesome/free-solid-svg-icons";
 import Colors from "../../constants/Colors";
 import SearchBar from "../../components/SearchBar";
 import {useLocalFetchEmployees} from "../../Hooks/useLocalFetchEmployees";
-import ContactItem from "../../components/ContactItem";
 import {useQueryClient} from "@tanstack/react-query";
 import useDebounce from "../../Hooks/useDebounce";
-import {setupDatabaseInstance} from "../../store/SQLite/database";
+import ContactItem from "../../components/ContactItem";
 
 const Page = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -30,13 +29,16 @@ const Page = () => {
 
     /** fetch using remote api start */
 
-    // Fetching logic from the useFetchEmployees hook
+        // Fetching logic from the useFetchEmployees hook
     const {refetchRemote} = useFetchEmployees();
 
     // Check if more than 30 minutes have passed since the last fetch
     const isFetchRequired = () => {
         const lastFetchTime = lastContactFetchInfoStore.getState().lastFetchTime;
-        return hasBeenMoreThan30Minutes(lastFetchTime); // Use the helper function to determine if fetch is needed
+        if (lastFetchTime !== null) {
+            return hasBeenMoreThan30Minutes(lastFetchTime); // Use the helper function to determine if fetch is needed
+        }
+        return true;
     };
 
     useEffect(() => {
@@ -54,8 +56,16 @@ const Page = () => {
 
     /** fetch using local api start */
 
-    // Fetching logic from the useLocalFetchEmployees hook
-    const { data, error, status, fetchNextPage, hasNextPage, refetchLocal, isFetchingNextPage } = useLocalFetchEmployees(debouncedSearchQuery);
+        // Fetching logic from the useLocalFetchEmployees hook
+    const {
+            data,
+            error,
+            status,
+            fetchNextPage,
+            hasNextPage,
+            refetchLocal,
+            isFetchingNextPage
+        } = useLocalFetchEmployees(debouncedSearchQuery);
 
     const allContacts = data ? data.pages.flatMap(page => page.data?.data?.employees) : [];
 
@@ -132,39 +142,36 @@ const Page = () => {
                     </View>
                 )}
 
-                {status === 'success' && (
-                    <>
-                        <FlatList
-                            data={allContacts}
-                            renderItem={({item}) => (
-                                // <ContactItem item={item}/>
-                                <></>
-                            )}
-                            keyExtractor={(item, index) => index.toString()}
-                            onEndReached={() => {
-                                console.log("End reached...")
-                                if (hasNextPage) {
-                                    console.log("Fetching next page...")
-                                    fetchNextPage();
-                                }
-                            }}
-                            onEndReachedThreshold={0.5} // Trigger when within 10% of the bottom
-                            ListFooterComponent={() =>
-                                isFetchingNextPage ? (
-                                    <ActivityIndicator size="large" color={Colors.primary}/>
-                                ) : null
+                {status === 'success' && data && (
+                    <FlatList
+                        data={allContacts}
+                        renderItem={({item}) => (
+                            <ContactItem item={item}/>
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                        onEndReached={() => {
+                            console.log("End reached...")
+                            if (hasNextPage) {
+                                console.log("Fetching next page...")
+                                fetchNextPage();
                             }
-                            contentContainerStyle={{minHeight: '100%'}}
-                            refreshControl={
-                                <RefreshControl
-                                    refreshing={isRefreshing}
-                                    onRefresh={handleHardRefresh}
-                                    tintColor={Colors.primary} // Change this to your desired color
-                                    colors={[Colors.primary]} // For Android
-                                />
-                            }
-                        />
-                    </>
+                        }}
+                        onEndReachedThreshold={0.5} // Trigger when within 10% of the bottom
+                        ListFooterComponent={() =>
+                            isFetchingNextPage ? (
+                                <ActivityIndicator size="large" color={Colors.primary}/>
+                            ) : null
+                        }
+                        contentContainerStyle={{minHeight: '100%'}}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={isRefreshing}
+                                onRefresh={handleHardRefresh}
+                                tintColor={Colors.primary} // Change this to your desired color
+                                colors={[Colors.primary]} // For Android
+                            />
+                        }
+                    />
                 )}
             </View>
         </KeyboardAvoidingView>
