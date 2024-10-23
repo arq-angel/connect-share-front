@@ -4,7 +4,7 @@ import Colors from "../constants/Colors";
 
 const ContactItem = ({item, containerStyles}) => {
     return (
-        <TouchableOpacity className={`mb-2 mx-3 py-1 border-b border-gray-200 ${containerStyles}`}>
+        /*<TouchableOpacity className={`mb-2 mx-3 py-1 border-b border-gray-200 ${containerStyles}`}>
             <View className="flex-row justify-between items-center ">
                 <View className="flex-row items-center">
                     {!item.image ? (
@@ -41,7 +41,8 @@ const ContactItem = ({item, containerStyles}) => {
                     </View>
                 </View>
             </View>
-        </TouchableOpacity>
+        </TouchableOpacity>*/
+        <></>
     );
 };
 

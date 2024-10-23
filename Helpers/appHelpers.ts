@@ -14,3 +14,11 @@ export const hasBeenMoreThan30Minutes = (lastFetchTime) => {
 
     return timeDifference >= 30; // Return true if more than 30 minutes have passed
 };
+
+// Helper function to resolve image loading urls
+export const resolveImageUrl = (path) => {
+    const url = "https://myapplib.com/";
+
+    // console.log("New image URL: ", url + path);
+    return  url + path;
+}

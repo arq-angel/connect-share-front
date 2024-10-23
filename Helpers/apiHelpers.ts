@@ -37,6 +37,10 @@ export const successFormat = (response) => {
                 queryParams: responseData?.data?.queryParams,
             };
         }
+
+        if (responseData?.data) {
+            returnData.data = responseData.data;
+        }
         returnData.message = responseData.message;
     } else {
         returnData.message = responseData?.message || "Unknown success response.";

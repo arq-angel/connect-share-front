@@ -62,14 +62,15 @@ const InitialLayout = () => {
         mutationFn: getConfirmToken,
         onSuccess: (data) => {
             console.log("Success response:", data);
-            // console.log("Redirecting user to contacts...");
-            console.log("Redirecting user to facilities...");
+            console.log("Redirecting user to contacts...");
+            // console.log("Redirecting user to facilities...");
 
             // Handle state updates and routing after successful token validation
             Promise.resolve().then(() => {
                 setIsLoading(false);
                 // router.replace("/(home)/contacts");
-                router.replace("/(home)/facilities");
+                // router.replace("/(home)/facilities");
+                router.replace("/(profile)/editProfile");
             });
         },
         onError: (error) => {
