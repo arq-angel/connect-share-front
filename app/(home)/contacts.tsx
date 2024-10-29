@@ -20,6 +20,7 @@ import {useLocalFetchEmployees} from "../../Hooks/useLocalFetchEmployees";
 import {useQueryClient} from "@tanstack/react-query";
 import useDebounce from "../../Hooks/useDebounce";
 import ContactItem from "../../components/ContactItem";
+import {useSelector} from "react-redux";
 
 const Page = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -93,6 +94,9 @@ const Page = () => {
 
     /** fetch using remote api end */
 
+    const token = useSelector((state) => state.bearerToken.token)
+    const expiresAt = useSelector((state) => state.bearerToken.expiresAt)
+
     return (
         <KeyboardAvoidingView style={{flex: 1}} behavior="padding">
             <View className="flex-1 bg-white flex-col">
@@ -129,8 +133,13 @@ const Page = () => {
 
                 </View>
 
+                <View>
+                    <Text>Token: {token}</Text>
+                    <Text>Expires At: {expiresAt}</Text>
+                </View>
 
-                {status === 'pending' && (
+
+                {/*{status === 'pending' && (
                     <View className="flex justify-center items-center mt-3">
                         <ActivityIndicator size="large" color={Colors.primary}/>
                     </View>
@@ -172,7 +181,7 @@ const Page = () => {
                             />
                         }
                     />
-                )}
+                )}*/}
             </View>
         </KeyboardAvoidingView>
 

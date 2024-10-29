@@ -7,17 +7,25 @@ import Toast from "react-native-toast-message";
 import {toastConfig} from "../components/customToasts";
 import {getConfirmToken} from "../api/auth";
 import {bearerTokenStore} from "../store/mmkv/bearerTokenStore";
-import {View, ActivityIndicator} from "react-native";
+import {View, ActivityIndicator, Button, Text, SafeAreaView} from "react-native";
 import Colors from "../constants/Colors";
 import {useFetchEmployees} from "../Hooks/useFetchEmployees";
+
+import {Provider, useDispatch, useSelector} from "react-redux";
+import Store, {persistor} from "../redux/store";
+import {increment, decrement} from "../redux/exampleSlice";
+import {PersistGate} from "redux-persist/integration/react";
+import {setToken, clearToken} from "../redux/bearerTokenSlice";
+
 
 const queryClient = new QueryClient();
 
 const InitialLayout = () => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(true);
-    const bearerToken = bearerTokenStore.getState().token;
-    const tokenExpiresAt = bearerTokenStore.getState().expiresAt;
+    const bearerToken = useSelector((state) => state.bearerToken.token);
+    const tokenExpiresAt = useSelector((state) => state.bearerToken.expiresAt);
+    const dispatch = useDispatch();
 
 
     useEffect(() => {
@@ -68,9 +76,9 @@ const InitialLayout = () => {
             // Handle state updates and routing after successful token validation
             Promise.resolve().then(() => {
                 setIsLoading(false);
-                // router.replace("/(home)/contacts");
+                router.replace("/(home)/contacts");
                 // router.replace("/(home)/facilities");
-                router.replace("/(profile)/editProfile");
+                // router.replace("/(profile)/editProfile");
             });
         },
         onError: (error) => {
@@ -81,7 +89,7 @@ const InitialLayout = () => {
 
             // Handle specific case for token expiration
             if (errorMessage === 'Unauthorized.') {
-                bearerTokenStore.getState().clearToken();
+                dispatch(clearToken());
                 errorMessage = 'Token Expired. You have been logged out.';
 
                 Toast.show({
@@ -152,21 +160,40 @@ const InitialLayout = () => {
 }
 
 const RootLayout = () => {
-
-
     return (
-        <QueryClientProvider client={queryClient}>
-            <UserLoggedInProvider>
-                <PageHeadingProvider>
-                    <InitialLayout/>
-                </PageHeadingProvider>
-            </UserLoggedInProvider>
-            {/* Add the Toast component here */}
-            <Toast
-                config={toastConfig}
-            />
-        </QueryClientProvider>
+        <Provider store={Store}>
+            <PersistGate loading={null} persistor={persistor}>
+                <QueryClientProvider client={queryClient}>
+                    <UserLoggedInProvider>
+                        <PageHeadingProvider>
+                            <InitialLayout/>
+                            {/*<ReduxExampleComponent />*/}
+                        </PageHeadingProvider>
+                    </UserLoggedInProvider>
+                    {/* Add the Toast component here */}
+                    <Toast
+                        config={toastConfig}
+                    />
+                </QueryClientProvider>
+            </PersistGate>
+        </Provider>
     )
 };
+
+const ReduxExampleComponent = () => {
+    const value = useSelector((state) => state.example.value);
+    const dispatch = useDispatch();
+
+    const token = useSelector((state) => state.bearerToken.token);
+    const expiresAt = useSelector((state) => state.bearerToken.expiresAt);
+
+    return (
+        <SafeAreaView>
+            <Text>Value: {value}</Text>
+            <Button title="Increment" onPress={() => dispatch(increment())}/>
+            <Button title="Decrement" onPress={() => dispatch(decrement())}/>
+        </SafeAreaView>
+    )
+}
 
 export default RootLayout;

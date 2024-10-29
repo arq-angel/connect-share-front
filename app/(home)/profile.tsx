@@ -9,10 +9,13 @@ import {useMutation} from "@tanstack/react-query";
 import {postLogout} from "../../api/auth";
 import {bearerTokenStore} from "../../store/mmkv/bearerTokenStore";
 import {UserLoggedInContext} from "../../context/UserLoggedIn";
+import {useDispatch} from "react-redux";
+import {clearToken} from "../../redux/bearerTokenSlice";
 
 const Page = () => {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+    const dispatch = useDispatch();
 
     const logoutMutation = useMutation({
         mutationFn: postLogout,
@@ -21,7 +24,7 @@ const Page = () => {
 
             console.log("Clearing the token...")
             //  clear the stored token
-            bearerTokenStore.getState().clearToken();
+            dispatch(clearToken());
             console.log("Stored token:", {
                 token: bearerTokenStore.getState().token,
                 expiresAt: bearerTokenStore.getState().expiresAt
@@ -47,7 +50,7 @@ const Page = () => {
             console.log('Original error:', error);
 
             if (error?.message == 'Unauthorized.') {
-                bearerTokenStore.getState().clearToken();
+                dispatch(clearToken());
                 errorMessage = 'Unauthorized. You have been logged out.';
                 router.replace("/(auth)/login");
             }

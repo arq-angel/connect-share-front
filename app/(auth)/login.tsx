@@ -6,6 +6,8 @@ import {postLogin} from "../../api/auth";
 import {useMutation} from "@tanstack/react-query";
 import {bearerTokenStore} from "../../store/mmkv/bearerTokenStore";
 import Toast from "react-native-toast-message";
+import {useDispatch, useSelector} from "react-redux";
+import {setToken} from "../../redux/bearerTokenSlice";
 
 const Page = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -15,6 +17,8 @@ const Page = () => {
         password: "",
         deviceName: ""
     });
+
+    const dispatch = useDispatch();
 
     const loginMutation = useMutation({
         mutationFn: postLogin,
@@ -33,6 +37,8 @@ const Page = () => {
                 token: bearerTokenStore.getState().token,
                 expiresAt: bearerTokenStore.getState().expiresAt
             });
+
+            dispatch(setToken({token: data.data.token, expiresAt: data.data.expiresAt}));
 
             setIsLoading(false);
 
