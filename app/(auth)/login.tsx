@@ -35,7 +35,8 @@ const Page = () => {
 
     useEffect(() => {
         setLoginData({
-            email: "john@example.com",
+            // email: "john@example.com",
+            email: "wprice@example.com",
             password: "password",
             deviceName: "iOS Emulator"
         })

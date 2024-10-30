@@ -1,4 +1,4 @@
-import {useMutation} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {handleLogout} from "@/apis/remote/authAPI";
 import {useDispatch} from "react-redux";
 import {clearToken, setToken} from "@/redux/bearerTokenSlice";
@@ -7,6 +7,7 @@ import store from "@/redux/store";
 
 export const useLogoutMutation = () => {
     const dispatch = useDispatch();
+    const queryClient = useQueryClient();
 
     const {mutate, status, isPending, isError, data, error} = useMutation({
         mutationFn: handleLogout,
@@ -16,6 +17,7 @@ export const useLogoutMutation = () => {
 
             dispatch(clearToken());
             console.log("Stored Token: ", store.getState().bearerToken.token);
+            queryClient.removeQueries(["profile"]);
 
             Toast.show({
                 type: 'customSuccess',

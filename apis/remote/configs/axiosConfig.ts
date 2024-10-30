@@ -4,6 +4,7 @@ import store from "@/redux/store";
 import {clearToken} from "@/redux/bearerTokenSlice";
 import {getRouter} from "@/utils/routerService";
 import Toast from "react-native-toast-message";
+import {getQueryClientService} from "@/utils/queryClientService";
 
 const siteToken = '7|ddVwAWCcbmI9TrUIwnSJAqO7K7DJY6ypsX5Fq5pvad7907ac';
 const baseUrl = 'https://myapplib.com/api/v1';
@@ -50,12 +51,16 @@ apiClient.interceptors.response.use(
         // Check for 401 Unauthorized response
         if (error.response?.status === 401) {
             console.log("Unauthorized response from the server");
-            // Automatically log out user on 401
+            // clear the token
             store.dispatch(clearToken());
             console.log("Stored Token: ", store.getState().bearerToken.token);
 
-            const router = getRouter();
+            // clear the profile cache
+            // this doesn't work correctly at the moment - instead I am fetching the profile from contacts page after evey login regardless of stale or not using handleFetch
+            // const queryClient = getQueryClientService();
+            // queryClient.invalidateQueries({ queryKey: ["profile"], exact: true });
 
+            const router = getRouter();
             // Redirect to login screen and reset navigation state
             if (router) {
                 router.replace("/(auth)/login"); // Adjust the path to your login route
