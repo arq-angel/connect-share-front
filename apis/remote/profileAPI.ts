@@ -6,16 +6,14 @@ export const getUserProfile = async () => {
 
     return getRequest(profileUrl)
         .then((response) => {
-            console.log("Success at getUserProfile: ", response);
+            // console.log("Success at getUserProfile: ", response);
             return response;
         })
         .catch((error) => {
-            console.log("Error at getUserProfile: ", error);
+            // console.log("Error at getUserProfile: ", error);
             return Promise.reject(error);
         })
         .finally(() => {
             console.log("Get user profile finished...");
-        })
-        ;
-
+        });
 }

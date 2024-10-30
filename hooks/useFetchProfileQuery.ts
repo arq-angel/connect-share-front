@@ -13,7 +13,7 @@ export const useFetchProfileQuery = () => {
     });
 
     const handleFetch = () => {
-        console.log("Manual fetch triggered.")
+        console.log("Manual profile fetch triggered.")
         refetch();
     }
 
