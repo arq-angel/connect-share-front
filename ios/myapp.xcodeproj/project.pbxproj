@@ -10,12 +10,18 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		36CEF200B746493E969C6C98 /* dark-Icon-60x60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C603FA385B344FD591F3081F /* dark-Icon-60x60@2x.png */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
+		4A2B96437D2B43C19E25F45B /* default-Icon-60x60@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9D47517E37DF47AE93A6A745 /* default-Icon-60x60@3x.png */; };
 		6D951A1AA3AD421E9EADA613 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = E36FA650A6B4478A8E249199 /* noop-file.swift */; };
 		96905EF65AED1B983A6B3ABC /* libPods-myapp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-myapp.a */; };
 		98B51659B371F45AB4F3E6B3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 324614BF05913BC945004998 /* PrivacyInfo.xcprivacy */; };
+		A6859A77DCE14361A44D0B10 /* vivid-Icon-60x60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A42F7A1077794DB2A7906967 /* vivid-Icon-60x60@2x.png */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		C325C550768C426399B94DDF /* vivid-Icon-60x60@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D677C805F0F74B0988216205 /* vivid-Icon-60x60@3x.png */; };
+		D8674AC596554A12B3A2CEED /* dark-Icon-60x60@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E549CCA8533B410CA700C44E /* dark-Icon-60x60@3x.png */; };
+		F9064589C9434FD89D6A2679 /* default-Icon-60x60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 347475E4E0DF40C7A5392AC6 /* default-Icon-60x60@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,13 +32,19 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = myapp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = myapp/main.m; sourceTree = "<group>"; };
 		324614BF05913BC945004998 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = myapp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		347475E4E0DF40C7A5392AC6 /* default-Icon-60x60@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "default-Icon-60x60@2x.png"; path = "myapp/DynamicAppIcons/default-Icon-60x60@2x.png"; sourceTree = "<group>"; };
 		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-myapp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-myapp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2E3173556A471DD304B334 /* Pods-myapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-myapp.debug.xcconfig"; path = "Target Support Files/Pods-myapp/Pods-myapp.debug.xcconfig"; sourceTree = "<group>"; };
 		7A4D352CD337FB3A3BF06240 /* Pods-myapp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-myapp.release.xcconfig"; path = "Target Support Files/Pods-myapp/Pods-myapp.release.xcconfig"; sourceTree = "<group>"; };
 		9295551EC9E04E32B39221B4 /* myapp-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "myapp-Bridging-Header.h"; path = "myapp/myapp-Bridging-Header.h"; sourceTree = "<group>"; };
+		9D47517E37DF47AE93A6A745 /* default-Icon-60x60@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "default-Icon-60x60@3x.png"; path = "myapp/DynamicAppIcons/default-Icon-60x60@3x.png"; sourceTree = "<group>"; };
+		A42F7A1077794DB2A7906967 /* vivid-Icon-60x60@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "vivid-Icon-60x60@2x.png"; path = "myapp/DynamicAppIcons/vivid-Icon-60x60@2x.png"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = myapp/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		C603FA385B344FD591F3081F /* dark-Icon-60x60@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "dark-Icon-60x60@2x.png"; path = "myapp/DynamicAppIcons/dark-Icon-60x60@2x.png"; sourceTree = "<group>"; };
+		D677C805F0F74B0988216205 /* vivid-Icon-60x60@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "vivid-Icon-60x60@3x.png"; path = "myapp/DynamicAppIcons/vivid-Icon-60x60@3x.png"; sourceTree = "<group>"; };
 		E36FA650A6B4478A8E249199 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "myapp/noop-file.swift"; sourceTree = "<group>"; };
+		E549CCA8533B410CA700C44E /* dark-Icon-60x60@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "dark-Icon-60x60@3x.png"; path = "myapp/DynamicAppIcons/dark-Icon-60x60@3x.png"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-myapp/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -62,6 +74,7 @@
 				E36FA650A6B4478A8E249199 /* noop-file.swift */,
 				9295551EC9E04E32B39221B4 /* myapp-Bridging-Header.h */,
 				324614BF05913BC945004998 /* PrivacyInfo.xcprivacy */,
+				DB78D1CE022A4E7795B8EA5F /* DynamicAppIcons */,
 			);
 			name = myapp;
 			sourceTree = "<group>";
@@ -139,6 +152,20 @@
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
+		DB78D1CE022A4E7795B8EA5F /* DynamicAppIcons */ = {
+			isa = PBXGroup;
+			children = (
+				347475E4E0DF40C7A5392AC6 /* default-Icon-60x60@2x.png */,
+				9D47517E37DF47AE93A6A745 /* default-Icon-60x60@3x.png */,
+				C603FA385B344FD591F3081F /* dark-Icon-60x60@2x.png */,
+				E549CCA8533B410CA700C44E /* dark-Icon-60x60@3x.png */,
+				A42F7A1077794DB2A7906967 /* vivid-Icon-60x60@2x.png */,
+				D677C805F0F74B0988216205 /* vivid-Icon-60x60@3x.png */,
+			);
+			name = DynamicAppIcons;
+			path = "";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -204,6 +231,12 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
 				98B51659B371F45AB4F3E6B3 /* PrivacyInfo.xcprivacy in Resources */,
+				F9064589C9434FD89D6A2679 /* default-Icon-60x60@2x.png in Resources */,
+				4A2B96437D2B43C19E25F45B /* default-Icon-60x60@3x.png in Resources */,
+				36CEF200B746493E969C6C98 /* dark-Icon-60x60@2x.png in Resources */,
+				D8674AC596554A12B3A2CEED /* dark-Icon-60x60@3x.png in Resources */,
+				A6859A77DCE14361A44D0B10 /* vivid-Icon-60x60@2x.png in Resources */,
+				C325C550768C426399B94DDF /* vivid-Icon-60x60@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -254,10 +287,12 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-myapp/Pods-myapp-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ExpoSQLite/crsqlite.framework/crsqlite",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/crsqlite.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -355,7 +390,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.arq-angel.my-app";
-				PRODUCT_NAME = myapp;
+				PRODUCT_NAME = connectsharefront;
 				SWIFT_OBJC_BRIDGING_HEADER = "myapp/myapp-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -383,7 +418,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.arq-angel.my-app";
-				PRODUCT_NAME = myapp;
+				PRODUCT_NAME = connectsharefront;
 				SWIFT_OBJC_BRIDGING_HEADER = "myapp/myapp-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
