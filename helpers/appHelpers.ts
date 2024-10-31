@@ -5,8 +5,8 @@ export const getISOStringTime = () => {
 
 export const getExpiresAtForFetch = () => {
     const now = new Date();
-    // now.setMinutes(now.getMinutes() + 30); // Adds 30 minutes
-    now.setSeconds(now.getSeconds() + 30); // Adds seconds for testing
+    now.setMinutes(now.getMinutes() + 30); // Adds 30 minutes
+    // now.setSeconds(now.getSeconds() + 30); // Adds seconds for testing
     return now.toISOString(); // Returns an ISO 8601 string
 }
 

@@ -5,6 +5,8 @@ import {useQueryClient} from "@tanstack/react-query";
 import {useFetchEmployeesInfiniteQuery} from "@/hooks/useFetchEmployeesInfiniteQuery";
 import {checkIfExpired} from "@/helpers/appHelpers";
 import store from "@/redux/store";
+import TopBar from "@/components/TopBar";
+import SecondTopBar from "@/components/SecondTopBar";
 
 const Page = () => {
     const queryClient = useQueryClient();
@@ -31,9 +33,10 @@ const Page = () => {
     }, [shouldFetch]);
     useEffect(() => {
         if (checkIfExpired(employeesFetchExpiresAt)) {
-            console.log("Employee Fetch Expired.")
+            console.log("Employee Fetch expired.")
             setShouldFetch(true);
         }
+        console.log("Employee Fetch has not expired.")
     }, [employeesFetchExpiresAt]);
     const handleManualEmployeesFetch = () => {
         setShouldFetch(true);
@@ -42,16 +45,12 @@ const Page = () => {
 
 
     return (
-        <View className="flex-1 justify-center items-center">
-            <Text>Contacts Page</Text>
-            {isFetchingNextPage && (
-                <Text>Fetching Next Page...</Text>
-            )}
-            <TouchableOpacity
-                onPress={() => handleManualEmployeesFetch()}
-            >
-                <Text>Manual Fetch</Text>
-            </TouchableOpacity>
+        <View className="flex-1 justify-start items-start bg-white">
+            <TopBar/>
+            <SecondTopBar handleManualEmployeesFetch={handleManualEmployeesFetch} isFetching={isFetchingNextPage} />
+            <View>
+
+            </View>
         </View>
     );
 };
