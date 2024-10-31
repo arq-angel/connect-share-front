@@ -1,8 +1,9 @@
 import {getRequest} from "@/apis/remote/configs/axiosUtils";
 
-export const getEmployeesFromAPI = async () => {
+export const getEmployeesFromAPI = async ({pageParam = 1}) => {
     console.log("Get employees list start...");
-    const employeesUrl = '/employees';
+    console.log(`Fetching employees for page ${pageParam}...`);
+    const employeesUrl = `/employees?page=${pageParam}`;
 
     return getRequest(employeesUrl)
         .then((response) => {

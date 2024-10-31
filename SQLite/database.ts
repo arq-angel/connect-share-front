@@ -16,10 +16,10 @@ const setupDatabaseInstance = async () => {
 }
 
 
-const setupEmployeesTable = async () => {
+const setupEmployeesTable = async (): Promise<true | Error> => {
     try {
         const db = await setupDatabaseInstance();
-        db?.execAsync(`
+        await db?.execAsync(`
             PRAGMA journal_mode = WAL;
             DROP TABLE IF EXISTS employees;
             CREATE TABLE IF NOT EXISTS employees (
@@ -29,12 +29,15 @@ const setupEmployeesTable = async () => {
                 lastName TEXT,
                 image TEXT,
                 company TEXT,
-                page TEXT
-              );
-            `);
+                page TEXT,
+                timestamp TEXT
+            );
+        `);
         console.log("Created new employees table");
+        return true; // Resolves to true if successful
     } catch (error) {
         console.log("Error creating the employees table:", error);
+        return Promise.reject(error); // Rejects with the error
     }
 }
 

@@ -1,18 +1,32 @@
 import {configureStore} from '@reduxjs/toolkit';
 import bearerTokenReducer from "@/redux/bearerTokenSlice";
+import employeesFetchInfoReducer from "@/redux/employeesFetchInfoSlice";
 import {reduxStorage} from "@/redux/redux-mmkv-storage";
 import {persistReducer, persistStore} from "redux-persist";
+import localDatabaseSetupReducer from "@/redux/localDatabaseSetupSlice";
 
-const persistConfig = {
-    key: 'root',
-    storage: reduxStorage, // Custom MMKV storage here
-}
+// Separate persist configurations for each reducer
+const bearerTokenPersistConfig = {
+    key: 'bearerToken',
+    storage: reduxStorage,
+};
 
-const persistedBearerTokenReducer = persistReducer(persistConfig, bearerTokenReducer);
+const employeesFetchInfoPersistConfig = {
+    key: 'employeesFetchInfo',
+    storage: reduxStorage,
+};
+
+const persistedBearerTokenReducer = persistReducer(bearerTokenPersistConfig, bearerTokenReducer);
+const persistedEmployeesFetchInfoReducer = persistReducer(employeesFetchInfoPersistConfig, employeesFetchInfoReducer);
 
 const store = configureStore({
     reducer: {
-        bearerToken: persistedBearerTokenReducer, // Use the persisted reducer here
+        // Use the persisted reducer here
+        bearerToken: persistedBearerTokenReducer,
+        employeesFetchInfo: persistedEmployeesFetchInfoReducer,
+
+        // Non persisted reducer
+        localDatabaseSetup: localDatabaseSetupReducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

@@ -1,30 +1,15 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {useInfiniteQuery} from "@tanstack/react-query";
 import {getEmployeesFromAPI} from "@/apis/remote/employeeAPI";
-import {insertEmployee} from "@/SQLite/employees";
-import {setupEmployeesTable} from "@/SQLite/database";
-import { useEffect, useState } from "react";
-import {getISOStringTime, hasBeenMoreThan30Minutes} from "@/helpers/appHelpers";
-import Toast from "react-native-toast-message";
+import {useEffect} from "react";
+import {useDispatch} from "react-redux";
+import {setInfo} from "@/redux/employeesFetchInfoSlice";
+import store from "@/redux/store";
+import {getExpiresAtForFetch, getISOStringTime} from "@/helpers/appHelpers";
+import {insertEmployeesBatchAPI} from "@/apis/local/employeeAPI";
 
 export const useFetchEmployeesInfiniteQuery = () => {
-    const [isInserting, setIsInserting] = useState(false);
-    const [isDatabaseSetup, setIsDatabaseSetup] = useState(false);
-    const [currentPage, setCurrentPage] = useState(0);
-    const [previousPage, setPreviousPage] = useState(null);
-    const [shouldFetch, setShouldFetch] = useState(false);
-
-    const isFetchRequired = () => {
-        // const lastFetchTime = lastContactFetchInfoStore.getState().lastFetchTime;
-        // return hasBeenMoreThan30Minutes(lastFetchTime);
-        return true;
-    };
-
-    useEffect(() => {
-        setShouldFetch(isFetchRequired());
-        if (!isFetchRequired()) {
-            console.log("Last employees fetch was less than 30 minutes ago. Skipping fetch.");
-        }
-    }, []);
+    const dispatch = useDispatch();
+    let fetchInfo = {};
 
     const {
         data,
@@ -33,99 +18,88 @@ export const useFetchEmployeesInfiniteQuery = () => {
         hasNextPage,
         isFetching,
         isFetchingNextPage,
-        isError,
-        isLoading,
+        status,
         refetch,
+        isLoading,
     } = useInfiniteQuery({
-        queryKey: ['employees', 'live'],
-        queryFn: ({ pageParam = 1 }) => getEmployeesFromAPI({ page: pageParam }),
-        getNextPageParam: (lastPage) => {
-            const nextPage = lastPage.data?.pagination?.nextPage;
-            if (nextPage && nextPage !== previousPage) {
-                setPreviousPage(nextPage);
-                console.log("NextPage: ", nextPage);
-            }
-            return nextPage || undefined;
+        queryKey: ['employees', "live", "infinite"],
+        // queryFn: getEmployeesFromAPI,
+        queryFn: getEmployeesFromAPI,
+        initialPageParam: 1,
+        getNextPageParam: (data, pages) => {
+            const nextPage = data?.data?.pagination?.nextPage;
+            // console.log("Next Page:", nextPage ?? null);
+            return nextPage ?? null;
         },
-        enabled: shouldFetch,
-    });
+        enabled: false,
+    })
 
-    useEffect(() => {
-        const fetchAndSaveEmployees = async () => {
-            if (!data || isFetching || isFetchingNextPage || isInserting) return;
+    const fetchAllPages = async () => {
+        console.log("Fetch all pages start...");
 
-            try {
-                setIsInserting(true);
+        try {
+            const fetchPage = async (nextPageParam = 1) => {
+                const result = await fetchNextPage({pageParam: nextPageParam});
+                const newNextPage = result.data?.pages[result.data.pages.length - 1]?.data?.pagination?.nextPage;
 
-                if (!isDatabaseSetup) {
-                    console.log("Setting up the local database...");
-                    await setupEmployeesTable();
-                    setIsDatabaseSetup(true);
+                if (newNextPage) {
+                    console.log(`Fetching next page...${newNextPage}`);
+                    await fetchPage(newNextPage); // Fetch the next page if available
                 }
+            };
 
-                const latestPage = data.pages[data.pages.length - 1];
-                const employees = latestPage.data.requests;
-                const pageNumber = latestPage.data.pagination.currentPage;
-                const lastPage = latestPage.data.pagination.lastPage;
+            await fetchPage(); // Start the recursive fetch with the first page
+            console.log("All pages fetched.");
 
-                if (currentPage >= pageNumber) return;
-                setCurrentPage(pageNumber);
-
-                console.log(`Processing employees from page ${pageNumber} of ${lastPage}`);
-
-                for (const employee of employees) {
-                    await insertEmployee(employee, pageNumber);
-                }
-
-                if (pageNumber === lastPage) {
-                    console.log("All pages fetched.");
-                    const fetchTime = getISOStringTime();
-                    Toast.show({
-                        type: 'customSuccess',
-                        props: {
-                            text1: 'Fetched Successfully!',
-                            text2: 'Contacts have been successfully updated.',
-                        }
-                    });
-                    setShouldFetch(false); // Stop further fetch attempts
-                } else if (hasNextPage && !isFetchingNextPage) {
-                    console.log(`Fetching NextPage: ${latestPage.data.pagination.nextPage}`);
-                    await fetchNextPage();
-                }
-
-            } catch (error) {
-                console.error('Error inserting employees:', error);
-                const fetchTime = getISOStringTime();
-                Toast.show({
-                    type: 'error',
-                    props: {
-                        text1: 'Fetch Error',
-                        text2: 'An error occurred while fetching contacts. Please try again later.',
-                    }
-                });
-
-            } finally {
-                setIsInserting(false);
+            fetchInfo = {
+                lastFetchTime: getISOStringTime(),
+                wasSuccess: true,
+                message: "All employees retrieved successfully.",
+                wasError: false,
+                error: null,
+                expiresAt: getExpiresAtForFetch()
             }
-        };
+        } catch (error) {
+            console.log("Error occurred while fetching employees.", error);
+            fetchInfo = {
+                lastFetchTime: getISOStringTime(),
+                wasSuccess: false,
+                message: null,
+                wasError: true,
+                error: error,
+                expiresAt: null,
+            }
+        } finally {
+            console.log("Fetch all pages finished...");
 
-        if (shouldFetch) {
-            fetchAndSaveEmployees();
+            console.log("Saving the fetch info...")
+            dispatch(setInfo(fetchInfo));
+            console.log("Saved fetch info:", store.getState().employeesFetchInfo.message);
         }
 
-    }, [data, isFetching, isFetchingNextPage, isInserting, shouldFetch]);
-
-    const handleRefetch = () => {
-        console.log("Manual refetch triggered");
-        setCurrentPage(0);
-        setPreviousPage(null);
-        setShouldFetch(true);
-        refetch();
     };
 
+    useEffect(() => {
+        if (data) {
+            const latestPageData = data.pages[data.pages.length - 1];
+            // console.log("Newly fetched page data:", latestPageData);
+
+            const employees = latestPageData?.data?.requests;
+            const currentPage = latestPageData?.data?.pagination?.currentPage;
+
+            try {
+                insertEmployeesBatchAPI(employees, currentPage);
+            } catch (error) {
+                console.log(`Error saving employees of page: ${currentPage}`, error);
+            }
+        }
+    }, [data]);
+
+
     return {
-        isLoading,
+        fetchAllPages, // Method to start fetching all pages
+        isFetching,
         isFetchingNextPage,
-        fetch: handleRefetch,
+        status,
     };
 };

@@ -3,6 +3,20 @@ export const getISOStringTime = () => {
     return new Date().toISOString(); // Generates an ISO 8601 string
 };
 
+export const getExpiresAtForFetch = () => {
+    const now = new Date();
+    // now.setMinutes(now.getMinutes() + 30); // Adds 30 minutes
+    now.setSeconds(now.getSeconds() + 30); // Adds seconds for testing
+    return now.toISOString(); // Returns an ISO 8601 string
+}
+
+export const checkIfExpired = (expiresAt: string): boolean => {
+    const now = new Date();
+    const expirationTime = new Date(expiresAt);
+    return now >= expirationTime;
+}
+
+
 // Helper function to check if 30 minutes have passed since the last fetch
 export const hasBeenMoreThan30Minutes = (lastFetchTime) => {
     if (!lastFetchTime) return true; // If no last fetch time, force a refetch

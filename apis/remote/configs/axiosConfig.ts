@@ -33,6 +33,9 @@ apiClient.interceptors.request.use(
                 ? `${config.url}&siteToken=${siteToken}`
                 : `${config.url}?siteToken=${siteToken}`;
         }
+
+        // console.log("Configured Url: ", config.url)
+
         return config;
     },
     (error) => Promise.reject(error),
