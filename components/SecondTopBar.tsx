@@ -5,10 +5,8 @@ import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {Colors} from "@/constants/Colors";
 import {router} from "expo-router";
 
-const SecondTopBar = ({isFetching, handleManualEmployeesFetch}) => {
-    const [startId, setStartId] = useState(1);
-    const [endId, setEndId] = useState(15);
-    const [totalItems, setTotalItems] = useState(501);
+const SecondTopBar = ({isFetching, handleManualEmployeesFetch, startId = null, endId = null, totalItems = null}) => {
+
 
 
     return (
