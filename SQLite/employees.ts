@@ -10,45 +10,66 @@ const getEmployeesFromDB = async (perPage = 25, page = 1, searchQuery = '') => {
     try {
         db = await setupDatabaseInstance();
 
-        // Calculate the offset for pagination
-        const offset = (page - 1) * perPage;
+        // Ensure perPage and page are valid numbers
+        const validPerPage = Number(perPage) || 25; // Default to 25 if perPage is not a valid number
+        const validPage = Number(page) || 1;        // Default to 1 if page is not a valid number
+        const offset = (validPage - 1) * validPerPage;
+
+        const hasSearchQuery = searchQuery.trim() !== '';
         const searchTerm = `%${searchQuery}%`;
 
-        // Prepare the count query to get the total number of matching employees
-        countStatement = await db.prepareAsync(`
-            SELECT COUNT(*) as total FROM employees
-            WHERE firstName LIKE $searchTerm
-            OR middleName LIKE $searchTerm
-            OR lastName LIKE $searchTerm
-            OR company LIKE $searchTerm;
-        `);
+        console.log("Parameters: ", { perPage: validPerPage, page: validPage, searchQuery, hasSearchQuery, searchTerm, offset });
 
-        // Execute the count query
-        const countResult = await countStatement.executeAsync({ $searchTerm: searchTerm });
+        // Prepare the count query based on whether searchQuery is provided
+        const countQuery = hasSearchQuery
+            ? `
+                SELECT COUNT(*) as total FROM employees
+                WHERE firstName LIKE $searchTerm
+                OR middleName LIKE $searchTerm
+                OR lastName LIKE $searchTerm
+                OR company LIKE $searchTerm;
+              `
+            : `
+                SELECT COUNT(*) as total FROM employees;
+              `;
+
+        countStatement = await db.prepareAsync(countQuery);
+        const countResult = hasSearchQuery
+            ? await countStatement.executeAsync({ $searchTerm: searchTerm })
+            : await countStatement.executeAsync();
+
         const totalCountRow = await countResult.getFirstAsync();
         const totalCount = totalCountRow ? totalCountRow.total : 0;
 
-        // Prepare the main query with pagination and search functionality
-        selectStatement = await db.prepareAsync(`
-            SELECT * FROM employees
-            WHERE firstName LIKE $searchTerm
-            OR middleName LIKE $searchTerm
-            OR lastName LIKE $searchTerm
-            OR company LIKE $searchTerm
-            LIMIT $perPage OFFSET $offset;
-        `);
+        // Prepare the main query based on whether searchQuery is provided
+        const selectQuery = hasSearchQuery
+            ? `
+                SELECT * FROM employees
+                WHERE firstName LIKE $searchTerm
+                OR middleName LIKE $searchTerm
+                OR lastName LIKE $searchTerm
+                OR company LIKE $searchTerm
+                LIMIT $perPage OFFSET $offset;
+              `
+            : `
+                SELECT * FROM employees
+                LIMIT $perPage OFFSET $offset;
+              `;
 
-        // Execute the main query
-        const selectResult = await selectStatement.executeAsync({
-            $searchTerm: searchTerm,
-            $perPage: perPage,
-            $offset: offset
-        });
+        selectStatement = await db.prepareAsync(selectQuery);
+        const selectResult = hasSearchQuery
+            ? await selectStatement.executeAsync({
+                $searchTerm: searchTerm,
+                $perPage: Number(perPage),
+                $offset: Number(offset),
+            })
+            : await selectStatement.executeAsync({
+                $perPage: Number(perPage),
+                $offset: Number(offset),
+            });
 
-        // Fetch all matching employee records
         const employeeRows = await selectResult.getAllAsync();
 
-        // Calculate pagination details
         const totalPages = Math.ceil(totalCount / perPage);
         const pagination = {
             currentPage: page,
@@ -56,32 +77,30 @@ const getEmployeesFromDB = async (perPage = 25, page = 1, searchQuery = '') => {
             totalEmployees: totalCount,
             totalPages: totalPages,
             nextPage: page < totalPages ? page + 1 : null,
-            prevPage: page > 1 ? page - 1 : null
+            prevPage: page > 1 ? page - 1 : null,
         };
 
-        // Return the success response with pagination and query params
         return {
             success: true,
-            message: "Employees retrieved successfully.",
+            message: "Employees retrieved from local DB successfully.",
             data: {
                 employees: employeeRows,
                 pagination: pagination,
                 queryParams: {
                     page: page,
                     perPage: perPage,
-                    searchQuery: searchQuery
-                }
-            }
+                    searchQuery: searchQuery,
+                },
+            },
         };
     } catch (error) {
-        console.log("Error fetching employees from the database:", error);
+        console.log("Error fetching employees from the local database:", error);
         return {
             success: false,
-            message: "Error fetching employees from the database.",
-            error: error
+            message: "Error fetching employees from the local database.",
+            error: error,
         };
     } finally {
-        // Finalize prepared statements to release resources
         if (countStatement) await countStatement.finalizeAsync();
         if (selectStatement) await selectStatement.finalizeAsync();
     }

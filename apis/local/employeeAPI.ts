@@ -43,12 +43,12 @@ export const fetchPaginatedEmployeesAPI = async (perPage = 25, page = 1, searchQ
             };
         }
     } catch (error) {
-        console.log("API Error in fetching paginated employees:", error);
+        console.log("API Error in fetching paginated local employees:", error);
 
         // Return a standardized error response
         return {
             success: false,
-            message: "Failed to fetch employees from the database.",
+            message: "Failed to fetch employees from the local database.",
             error: error.message || error
         };
     }

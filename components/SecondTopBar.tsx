@@ -22,6 +22,7 @@ const SecondTopBar = ({isFetching, handleManualEmployeesFetch}) => {
                         console.log("Refresh pressed.")
                         handleManualEmployeesFetch();
                     }}
+                    disabled={isFetching}
                 >
                     {isFetching ? (
                         <ActivityIndicator size="small" color={Colors.myApp.primary} />
