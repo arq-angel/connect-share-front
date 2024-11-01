@@ -23,7 +23,6 @@ export const useFetchEmployeesInfiniteQuery = () => {
         isLoading,
     } = useInfiniteQuery({
         queryKey: ['employees', "live", "infinite"],
-        // queryFn: getEmployeesFromAPI,
         queryFn: getEmployeesFromAPI,
         initialPageParam: 1,
         getNextPageParam: (data, pages) => {
@@ -86,20 +85,16 @@ export const useFetchEmployeesInfiniteQuery = () => {
 
             const employees = latestPageData?.data?.requests;
             const currentPage = latestPageData?.data?.pagination?.currentPage;
-
-            try {
-                insertEmployeesBatchAPI(employees, currentPage);
-            } catch (error) {
-                console.log(`Error saving employees of page: ${currentPage}`, error);
-            }
         }
     }, [data]);
 
 
     return {
+        data,
         fetchAllPages, // Method to start fetching all pages
         isFetching,
         isFetchingNextPage,
         status,
+        refetch
     };
 };

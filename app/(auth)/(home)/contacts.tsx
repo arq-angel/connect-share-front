@@ -7,7 +7,6 @@ import {checkIfExpired, useDebounce} from "@/helpers/appHelpers";
 import store from "@/redux/store";
 import TopBar from "@/components/TopBar";
 import SecondTopBar from "@/components/SecondTopBar";
-import {useFetchLocalEmployeesInfiniteQuery} from "@/hooks/useFetchLocalEmployeesInfiniteQuery";
 import {Colors} from "@/constants/Colors";
 import ContactListItem from "@/components/contactListItem";
 
@@ -33,7 +32,7 @@ const Page = () => {
     /** Fetch Profile Data from remote API end */
 
     /** Fetch Employees List from remote API start */
-    const {fetchAllPages, isFetchingNextPage} = useFetchEmployeesInfiniteQuery();
+    const {data, fetchAllPages, isFetchingNextPage, refetch, status} = useFetchEmployeesInfiniteQuery();
     useEffect(() => {
         // queryClient.invalidateQueries(["employees", "live", "infinite"])
         if (shouldFetch) {
@@ -51,19 +50,6 @@ const Page = () => {
     const handleManualEmployeesFetch = () => {
         setShouldFetch(true);
     }
-    /** Fetch Employees List from remote API start */
-
-    /** Fetch Employees List from local API start */
-    const {
-        data,
-        isFetching,
-        isFetchingNextPage: isFetchingLocalNextPage,
-        hasNextPage,
-        status,
-        error,
-        fetchNextPage,
-        refetch: refetchLocal
-    } = useFetchLocalEmployeesInfiniteQuery(perPage,debouncedSearchQuery);
 
     const allContacts = data ? data.pages.flatMap(page => page.data?.employees) : [];
 
@@ -78,7 +64,7 @@ const Page = () => {
                 await queryClient.resetQueries(['employees', 'local', 'infinite'], { exact: true });
 
                 // Refetch only page 1 data with a delay to allow the loading indicator to show
-                await refetchLocal({ refetchPage: (_, index) => index === 0 });
+                await refetch({ refetchPage: (_, index) => index === 0 });
 
                 // Add a slight delay to let the loading indicator be visible
                 await new Promise(resolve => setTimeout(resolve, 500));
@@ -104,8 +90,7 @@ const Page = () => {
         }
     }, [data]);
 
-
-    /** Fetch Employees List from local API end */
+    /** Fetch Employees List from remote API end */
 
     const onViewableItemsChanged = useCallback(({ viewableItems }) => {
         if (viewableItems.length > 0) {
@@ -145,54 +130,7 @@ const Page = () => {
 
             <View className="flex-row mt-1">
                 <View className="flex-1">
-                    {status === 'pending' && (
-                        <View className="flex justify-center items-center mt-3">
-                            <ActivityIndicator size="large" color={Colors.myApp.primary}/>
-                        </View>
-                    )}
 
-                    {status === 'error' && (
-                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                            <Text style={{color: 'red'}}>Error: {error?.message || 'Something went wrong'}</Text>
-                        </View>
-                    )}
-
-                    {status === 'success' && data && (
-                        <FlatList
-                            className=""
-                            data={allContacts}
-                            renderItem={({item}) =>
-                                (
-                                    <ContactListItem item={item} />
-                                )
-                            }
-                            keyExtractor={(item, index) => index.toString()}
-                            onEndReached={() => {
-                                console.log("End reached...")
-                                if (hasNextPage) {
-                                    console.log("Fetching next page...")
-                                    fetchNextPage();
-                                }
-                            }}
-                            onEndReachedThreshold={0.5} // Trigger when within 10% of the bottom
-                            ListFooterComponent={() =>
-                                isFetchingNextPage ? (
-                                    <ActivityIndicator size="large" color={Colors.myApp.primary}/>
-                                ) : null
-                            }
-                            contentContainerStyle={{minHeight: '100%'}}
-                            refreshControl={
-                                <RefreshControl
-                                    refreshing={isRefreshing}
-                                    onRefresh={handleHardRefresh}
-                                    tintColor={Colors.myApp.primary} // Change this to your desired color
-                                    colors={[Colors.myApp.primary]} // For Android
-                                />
-                            }
-                            onViewableItemsChanged={onViewableItemsChanged}
-                            viewabilityConfig={viewabilityConfig}
-                        />
-                    )}
                 </View>
             </View>
         </View>
