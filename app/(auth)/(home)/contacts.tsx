@@ -145,7 +145,6 @@ const Page = () => {
 
                             {!isLoading && allContacts.length > 0 && (
                                 <FlatList
-                                    className="mb-24"
                                     data={allContacts}
                                     renderItem={({item}) =>
                                         (
@@ -166,7 +165,7 @@ const Page = () => {
                                             <ActivityIndicator size="large" color={Colors.myApp.primary}/>
                                         ) : null
                                     }
-                                    contentContainerStyle={{minHeight: '100%'}}
+                                    contentContainerStyle={{minHeight: '100%', paddingBottom: 180}}
                                     onViewableItemsChanged={onViewableItemsChanged}
                                     viewabilityConfig={viewabilityConfig}
                                 />

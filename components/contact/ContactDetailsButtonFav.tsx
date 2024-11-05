@@ -21,10 +21,10 @@ const ContactDetailsButtonFav = ({employee}) => {
 
     const handleToggleFavourite = () => {
         if (isFavourite) {
-            console.log('Removing from favourites:', employee);
+            // console.log('Removing from favourites:', employee);
             dispatch(removeContact(employee.id)); // Use only the ID to remove
         } else {
-            console.log('Adding to favourites:', employee);
+            // console.log('Adding to favourites:', employee);
             dispatch(addContact(employee));
         }
     };

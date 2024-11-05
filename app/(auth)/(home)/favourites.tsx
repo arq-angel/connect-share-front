@@ -33,7 +33,9 @@ const Page = () => {
                 }
             }
         )
+            .sort((a, b) => a.firstName.localeCompare(b.firstName)) // Sort alphabetically by firstName
         : [];
+
 
     useEffect(() => {
         setTotalItems(filteredFavourites.length);
@@ -90,7 +92,6 @@ const Page = () => {
                     <View className="flex-row mt-1">
                         <View className="flex-1">
                             <FlatList
-                                className="mb-24"
                                 data={filteredFavourites}
                                 renderItem={({item}) =>
                                     (
@@ -99,7 +100,7 @@ const Page = () => {
                                 }
                                 keyExtractor={(item, index) => index.toString()}
                                 onEndReachedThreshold={0.5} // Trigger when within 10% of the bottom
-                                contentContainerStyle={{minHeight: '100%'}}
+                                contentContainerStyle={{minHeight: '100%', paddingBottom: 180}}
                                 onViewableItemsChanged={onViewableItemsChanged}
                                 viewabilityConfig={viewabilityConfig}
                             />
