@@ -96,7 +96,7 @@ const Page = () => {
         >
             <View className="flex-1 justify-start items-start bg-white">
                 {/* Top Bar Start */}
-                <TopBar searchTerm="facilities..." searchQuery={searchQuery} handleTextChange={handleTextChange}/>
+                <TopBar searchTerm="facilities..." searchQuery={searchQuery} handleTextChange={handleTextChange} showFilter={true}/>
                 {/* Top Bar End */}
 
                 {/* Second Top Bar Start */}

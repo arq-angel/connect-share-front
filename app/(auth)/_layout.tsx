@@ -61,6 +61,23 @@ const AuthLayout = () => {
                     ),
                 }}
             />
+            <Stack.Screen
+                name="favouriteEmployeeDetails/[id]"
+                options={{
+                    headerShown: true,
+                    headerTitle: 'Favourite Contact Details',
+                    headerTitleStyle: {
+                        fontSize: 24,
+                        fontWeight: 'semibold',
+                        color: Colors.myApp.primary,
+                    },
+                    headerLeft: () => (
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <FontAwesomeIcon icon={faChevronLeft} size={25} color={Colors.myApp.primary} />
+                        </TouchableOpacity>
+                    ),
+                }}
+            />
         </Stack>
     );
 };

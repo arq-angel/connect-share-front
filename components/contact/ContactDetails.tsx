@@ -5,6 +5,8 @@ import ContactDetailsButton from "@/components/contact/ContactDetailsButton";
 import ContactDetailsDescription from "@/components/contact/ContactDetailsDescription";
 import ContactDetailsProfileImage from "@/components/contact/ContactDetailsProfileImage";
 import ContactDetailsProfileInfo from "@/components/contact/ContactDetailsProfileInfo";
+import ContactDetailsDescriptionAssignment from "@/components/contact/ContactDetailsDescriptionAssignment";
+import ContactDetailsButtonFav from "@/components/contact/ContactDetailsButtonFav";
 
 const ContactDetails = ({employee}) => {
     return (
@@ -29,8 +31,8 @@ const ContactDetails = ({employee}) => {
                     <View className="flex-row justify-between items-center py-3 mx-6">
                         <ContactDetailsButton icon={faPhone} title="Call"/>
                         <ContactDetailsButton icon={faEnvelope} title="Email"/>
-                        <ContactDetailsButton icon={faMessage} title="Message"/>
-                        <ContactDetailsButton icon={faStar} title="Fav"/>
+                        <ContactDetailsButton icon={faMessage} title="Text"/>
+                        <ContactDetailsButtonFav employee={employee}/>
                     </View>
                 </View>
             </View>
@@ -40,9 +42,7 @@ const ContactDetails = ({employee}) => {
                         <ContactDetailsDescription title="Mobile" value={employee?.phone}/>
                         <ContactDetailsDescription title="Work" value={employee?.phone}/>
                         <ContactDetailsDescription title="Email" value={employee?.email}/>
-                        <ContactDetailsDescription title="Facility" value={employee.assignments[0]?.facility}/>
-                        <ContactDetailsDescription title="Department" value={employee.assignments[0]?.department}/>
-                        <ContactDetailsDescription title="Job Title" value={employee.assignments[0]?.jobTitle}/>
+                        <ContactDetailsDescriptionAssignment title="Assignments" assignments={employee?.assignments} />
                     </View>
                 </View>
             </View>

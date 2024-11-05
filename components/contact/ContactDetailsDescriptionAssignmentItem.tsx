@@ -2,7 +2,7 @@ import React from 'react';
 import {Text, View} from "react-native";
 import {Colors} from "@/constants/Colors";
 
-const ProfileDetailsDescriptionAssignmentItem = ({assignment}) => {
+const ContactDetailsDescriptionAssignmentItem = ({assignment}) => {
     return (
         <View className="flex-row justify-start items-start gap-3 px-3 py-1">
             <View className="flex-1">
@@ -23,4 +23,4 @@ const ProfileDetailsDescriptionAssignmentItem = ({assignment}) => {
     );
 };
 
-export default ProfileDetailsDescriptionAssignmentItem;
+export default ContactDetailsDescriptionAssignmentItem;

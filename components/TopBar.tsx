@@ -6,9 +6,8 @@ import {Colors} from "@/constants/Colors";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import FilterModal from "@/components/FilterModal";
 
-const TopBar = ({searchQuery, handleTextChange, searchTerm}) => {
+const TopBar = ({searchQuery, handleTextChange, searchTerm, showFilter = false}) => {
     const [modalVisible, setModalVisible] = useState(false);
-
 
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -19,16 +18,18 @@ const TopBar = ({searchQuery, handleTextChange, searchTerm}) => {
                             <SearchBar searchTerm={searchTerm} searchQuery={searchQuery}
                                        handleTextChange={handleTextChange} containerStyles=""/>
                         </View>
-                        <View className="ps-2">
-                            <TouchableOpacity
-                                onPress={() => {
-                                    console.log("Show Modal Here...")
-                                    setModalVisible(true);
-                                }}
-                            >
-                                <FontAwesomeIcon icon={faFilter} size={20} color={Colors.myApp.primary}/>
-                            </TouchableOpacity>
-                        </View>
+                        {showFilter && (
+                            <View className="ps-2">
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        console.log("Show Modal Here...")
+                                        setModalVisible(true);
+                                    }}
+                                >
+                                    <FontAwesomeIcon icon={faFilter} size={20} color={Colors.myApp.primary}/>
+                                </TouchableOpacity>
+                            </View>
+                        )}
                     </View>
                 </View>
 
