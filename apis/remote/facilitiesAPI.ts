@@ -27,11 +27,11 @@ export const getFacilitiesFromAPI = async ({pageParam = 1, perPage = 25, searchQ
 
     return getRequest(facilitiesUrl)
         .then((response) => {
-            // console.log("Success at getEmployeesFromAPI: ", response);
+            // console.log("Success at getFacilitiesFromAPI: ", response);
             return response;
         })
         .catch((error) => {
-            // console.log("Error at getEmployeesFromAPI: ", error);
+            // console.log("Error at getFacilitiesFromAPI: ", error);
             return Promise.reject(error);
         })
         .finally(() => {

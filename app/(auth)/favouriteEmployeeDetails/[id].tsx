@@ -14,7 +14,7 @@ const EmployeeDetailsScreen = () => {
     const contacts = useSelector((state: RootState) => state.favouriteContacts.contacts);
 
     useEffect(() => {
-        console.log("favouriteContacts: ", contacts);
+        // console.log("favouriteContacts: ", contacts);
         const employeeDetails = contacts.some((contact) => {
             if (contact.id == favouriteEmployeeId) {
                 setFavouriteEmployee(contact);

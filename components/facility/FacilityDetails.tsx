@@ -7,6 +7,11 @@ import FacilityDetailsButton from "@/components/facility/FacilityDetailsButton";
 import FacilityDetailsDescription from "@/components/facility/FacilityDetailsDescription";
 
 const FacilityDetails = ({facility}) => {
+
+    const fullAddress = facility?.address + ', ' + facility?.suburb + ', ' + facility?.state + ', ' + facility?.postCode + ', ' + facility?.country;
+
+    console.log("full address", fullAddress);
+
     return (
         <View className="flex-1 flex-col">
             <View className="flex-row">
@@ -27,10 +32,10 @@ const FacilityDetails = ({facility}) => {
             <View className="flex-row">
                 <View className="flex-1">
                     <View className="flex-row justify-between items-center py-3 mx-6">
-                        <FacilityDetailsButton icon={faPhone} title="Call"/>
-                        <FacilityDetailsButton icon={faEnvelope} title="Email"/>
-                        <FacilityDetailsButton icon={faMap} title="Map"/>
-                        <FacilityDetailsButton icon={faProjectDiagram} title="Chart"/>
+                        <FacilityDetailsButton icon={faPhone} title="Call" contact={{type: "call", detail: facility?.phone}}/>
+                        <FacilityDetailsButton icon={faEnvelope} title="Email" contact={{type: "email", detail: facility?.email}}/>
+                        <FacilityDetailsButton icon={faMap} title="Map" contact={{type: "map", detail: fullAddress}}/>
+                        <FacilityDetailsButton icon={faProjectDiagram} title="Chart" contact={{type: "chart", detail: facility?.id}}/>
                     </View>
                 </View>
             </View>

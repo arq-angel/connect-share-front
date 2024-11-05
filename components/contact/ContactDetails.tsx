@@ -29,9 +29,9 @@ const ContactDetails = ({employee}) => {
             <View className="flex-row">
                 <View className="flex-1">
                     <View className="flex-row justify-between items-center py-3 mx-6">
-                        <ContactDetailsButton icon={faPhone} title="Call"/>
-                        <ContactDetailsButton icon={faEnvelope} title="Email"/>
-                        <ContactDetailsButton icon={faMessage} title="Text"/>
+                        <ContactDetailsButton icon={faPhone} title="Call" contact={{type: "call", detail: employee?.phone}}/>
+                        <ContactDetailsButton icon={faEnvelope} title="Email" contact={{type: "email", detail: employee?.email}}/>
+                        <ContactDetailsButton icon={faMessage} title="Text" contact={{type: "text", detail: employee?.phone}}/>
                         <ContactDetailsButtonFav employee={employee}/>
                     </View>
                 </View>
