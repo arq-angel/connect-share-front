@@ -1,7 +1,7 @@
 import {useInfiniteQuery} from "@tanstack/react-query";
-import {getEmployeesFromAPI} from "@/apis/remote/employeeAPI";
+import {getFacilitiesFromAPI} from "@/apis/remote/facilitiesAPI";
 
-export const useFetchEmployeesInfiniteQuery = ({perPage = 25, searchQuery = ''}) => {
+export const useFetchFacilitiesInfiniteQuery = ({perPage = 25, searchQuery = ''}) => {
     const {
         data,
         error,
@@ -14,8 +14,8 @@ export const useFetchEmployeesInfiniteQuery = ({perPage = 25, searchQuery = ''})
         isLoading,
     } = useInfiniteQuery({
 
-        queryKey: ['employees', "live", "infinite"],
-        queryFn: ({pageParam = 1}) => getEmployeesFromAPI({pageParam, perPage, searchQuery}),
+        queryKey: ['facilities', "live", "infinite"],
+        queryFn: ({pageParam = 1}) => getFacilitiesFromAPI({pageParam, perPage, searchQuery}),
         initialPageParam: 1,
         getNextPageParam: (data, pages) => {
             const nextPage = data?.data?.pagination?.nextPage;

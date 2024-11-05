@@ -1,80 +1,57 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, ActivityIndicator, FlatList, RefreshControl, TextInput} from "react-native";
+import {
+    View,
+    Text,
+    ActivityIndicator,
+    FlatList,
+    KeyboardAvoidingView, Platform
+} from "react-native";
 import {useFetchProfileQuery} from "@/hooks/useFetchProfileQuery";
 import {useQueryClient} from "@tanstack/react-query";
 import {useFetchEmployeesInfiniteQuery} from "@/hooks/useFetchEmployeesInfiniteQuery";
-import {checkIfExpired, useDebounce} from "@/helpers/appHelpers";
-import store from "@/redux/store";
+import {useDebounce} from "@/helpers/appHelpers";
 import TopBar from "@/components/TopBar";
 import SecondTopBar from "@/components/SecondTopBar";
 import {Colors} from "@/constants/Colors";
-import ContactListItem from "@/components/contactListItem";
+import ContactListItem from "@/components/ContactListItem";
 
 const Page = () => {
     const queryClient = useQueryClient();
-    const employeesFetchExpiresAt = store.getState().employeesFetchInfo.expiresAt;
-    const [shouldFetch, setShouldFetch] = useState(checkIfExpired(employeesFetchExpiresAt)); // Check expiry on mount so it checks when the page is mounted everytime
     const [searchQuery, setSearchQuery] = useState('');
-    const debouncedSearchQuery = useDebounce(searchQuery, 300); // Debounce search query with a 500ms delay
-    const [isRefreshing, setIsRefreshing] = useState(false);
+    const debouncedSearchQuery = useDebounce(searchQuery, 100); // Debounce search query with a 500ms delay
     const [perPage, setPerPage] = useState(25);
-    const [startId, setStartId] = useState(1);
-    const [endId, setEndId] = useState(15);
-    const [totalItems, setTotalItems] = useState(501);
+    const [startId, setStartId] = useState(null);
+    const [endId, setEndId] = useState(null);
+    const [totalItems, setTotalItems] = useState(null);
+    const [allContacts, setAllContacts] = useState([]);
 
     /** Fetch Profile Data from remote API start */
     const {fetch: profileFetch} = useFetchProfileQuery();
+
     useEffect(() => {
         // this works hand in hand with the axiosConfig where i have invalidated the cache on 401 response - but that needs to be fixed
         queryClient.invalidateQueries(["profile"]);
         profileFetch();
     }, []);
+
     /** Fetch Profile Data from remote API end */
 
     /** Fetch Employees List from remote API start */
-    const {data, fetchAllPages, isFetchingNextPage, refetch, status} = useFetchEmployeesInfiniteQuery();
-    useEffect(() => {
-        // queryClient.invalidateQueries(["employees", "live", "infinite"])
-        if (shouldFetch) {
-            console.log("Executing fetchAllPages()...")
-            fetchAllPages().finally(() => setShouldFetch(false));
-        }
-    }, [shouldFetch]);
-    useEffect(() => {
-        if (checkIfExpired(employeesFetchExpiresAt)) {
-            console.log("Employee Fetch expired.")
-            setShouldFetch(true);
-        }
-        console.log("Employee Fetch has not expired.")
-    }, [employeesFetchExpiresAt]);
+    const {
+        data,
+        error,
+        fetchNextPage,
+        hasNextPage,
+        isFetching,
+        isFetchingNextPage,
+        status,
+        refetch,
+        isLoading,
+    } = useFetchEmployeesInfiniteQuery({perPage, searchQuery: debouncedSearchQuery});
+
     const handleManualEmployeesFetch = () => {
-        setShouldFetch(true);
+        queryClient.invalidateQueries(['employees', "live", "infinite"])
     }
-
-    const allContacts = data ? data.pages.flatMap(page => page.data?.employees) : [];
-
-    const handleHardRefresh = async () => {
-        if (!isFetchingNextPage) { // to prevent hardRefresh while fetching from the database - to prevent caching conflicts in local db fetch
-            setIsRefreshing(true);
-            try {
-                console.log("Refreshing local contacts...");
-
-                // Clear the query cache for 'employees' and reset to ensure a fresh fetch
-                await queryClient.invalidateQueries(['employees', 'local', 'infinite'], { exact: true });
-                await queryClient.resetQueries(['employees', 'local', 'infinite'], { exact: true });
-
-                // Refetch only page 1 data with a delay to allow the loading indicator to show
-                await refetch({ refetchPage: (_, index) => index === 0 });
-
-                // Add a slight delay to let the loading indicator be visible
-                await new Promise(resolve => setTimeout(resolve, 500));
-            } catch (error) {
-                console.error("Error fetching contacts:", error);
-            } finally {
-                setIsRefreshing(false);
-            }
-        }
-    };
 
     const handleTextChange = (text) => {
         setSearchQuery(text);
@@ -82,22 +59,45 @@ const Page = () => {
     }
 
     useEffect(() => {
-        if (data) {
-            const currentPage = data.pages[data.pages.length - 1];
-            const totalItems = currentPage?.data?.pagination.totalEmployees;
-            // console.log('Total items: ', totalItems);
+        if (data && !isLoading) {
+            const lastPage = data.pages[data.pages.length - 1];
+            const totalItems = lastPage?.data?.pagination?.total;
             setTotalItems(totalItems);
+
+            const contacts = data.pages.flatMap(page => page.data?.requests);
+            setAllContacts(contacts);
+
+            // Set the start and end id as null when no items available
+            if (totalItems == 0) {
+                setStartId(null);
+                setEndId(null);
+            }
+
+            console.log("Total items:", totalItems);
+            // console.log("All contacts updated:", contacts);
         }
-    }, [data]);
+    }, [data, isLoading]);
+
+    useEffect(() => {
+        // Fetches when the state of debouncedSearchQuery is changed by adding the text in the search bar
+        if (debouncedSearchQuery !== "") {
+            refetch();
+        }
+        // Fetches when the search box is empty after clearing the search box
+        if (debouncedSearchQuery === "") {
+            refetch();
+        }
+    }, [debouncedSearchQuery, refetch]);
 
     /** Fetch Employees List from remote API end */
 
-    const onViewableItemsChanged = useCallback(({ viewableItems }) => {
+    const onViewableItemsChanged = useCallback(({viewableItems}) => {
         if (viewableItems.length > 0) {
             const firstVisibleItem = viewableItems[0].item;
             const lastVisibleItem = viewableItems[viewableItems.length - 1].item;
-            setStartId(firstVisibleItem.id); // assuming your items have an 'id' field
-            setEndId(lastVisibleItem.id); // assuming your items have an 'id' field
+            setStartId(firstVisibleItem.sequenceId); // assuming your items have an 'id' field
+            setEndId(lastVisibleItem.sequenceId); // assuming your items have an 'id' field
+            // console.log("First Item:", firstVisibleItem);
         }
     }, []);
 
@@ -105,35 +105,75 @@ const Page = () => {
         itemVisiblePercentThreshold: 50,
     };
 
-
     return (
-        <View className="flex-1 justify-start items-start bg-white">
-            {/*<TopBar/>*/}
-            <View className="flex-row">
-                <View className="flex-1 justify-center items-center p-3">
-                    <TextInput
-                        placeholder="Search contacts"
-                        value={searchQuery}
-                        onChangeText={(text) => handleTextChange(text)}
-                        className="border-2 border-b-gray-400 w-full p-2 rounded-lg"
-                    />
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1 }}
+        >
+            <View className="flex-1 justify-start items-start bg-white">
+                {/* Top Bar Start */}
+                <TopBar searchTerm="contacts..." searchQuery={searchQuery} handleTextChange={handleTextChange}/>
+                {/* Top Bar End */}
+
+                {/* Second Top Bar Start */}
+                <SecondTopBar
+                    handleManualFetch={handleManualEmployeesFetch}
+                    isRefreshing={(isLoading || isFetching) && !isFetchingNextPage}
+                    isFetchingNextPage={isFetchingNextPage}
+                    startId={startId}
+                    endId={endId}
+                    totalItems={totalItems}
+                />
+                {/* Second Top Bar End */}
+
+                {/* FlatList View Start */}
+                <View className="flex-row mt-1">
+                    <View className="flex-1">
+                        {(status === 'pending' || isLoading) && (
+                            <View className="flex justify-center items-center mt-3">
+                                <ActivityIndicator size="large" color={Colors.myApp.primary}/>
+                            </View>
+                        )}
+
+                        {status === 'error' && (
+                            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                                <Text style={{color: 'red'}}>Error: {error?.message || 'Something went wrong'}</Text>
+                            </View>
+                        )}
+
+                        {!isLoading && allContacts.length > 0 && (
+                            <FlatList
+                                className="mb-24"
+                                data={allContacts}
+                                renderItem={({item}) =>
+                                    (
+                                        <ContactListItem item={item}/>
+                                    )
+                                }
+                                keyExtractor={(item, index) => index.toString()}
+                                onEndReached={() => {
+                                    console.log("End reached...")
+                                    if (hasNextPage && !isFetchingNextPage && !isFetching) {
+                                        console.log("Fetching next page...")
+                                        fetchNextPage();
+                                    }
+                                }}
+                                onEndReachedThreshold={0.5} // Trigger when within 10% of the bottom
+                                ListFooterComponent={() =>
+                                    isFetchingNextPage ? (
+                                        <ActivityIndicator size="large" color={Colors.myApp.primary}/>
+                                    ) : null
+                                }
+                                contentContainerStyle={{minHeight: '100%'}}
+                                onViewableItemsChanged={onViewableItemsChanged}
+                                viewabilityConfig={viewabilityConfig}
+                            />
+                        )}
+                    </View>
+                    {/* FlatList View End */}
                 </View>
             </View>
-
-            <SecondTopBar
-                handleManualEmployeesFetch={handleManualEmployeesFetch}
-                isFetching={isFetchingNextPage}
-                startId={startId}
-                endId={endId}
-                totalItems={totalItems}
-            />
-
-            <View className="flex-row mt-1">
-                <View className="flex-1">
-
-                </View>
-            </View>
-        </View>
+        </KeyboardAvoidingView>
     );
 };
 
