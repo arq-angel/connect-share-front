@@ -19,7 +19,8 @@ const FacilityListItemProfileImage = ({item}) => {
                     style={{width: 60, height: 60}}
                 >
                     <Text className="text-3xl">
-                        {item?.name[0]}{item?.name[1]}
+                        {/*{item?.name[0]}{item?.name[1]}*/}
+                        {item?.name[0]}
                     </Text>
                 </View>
             )}

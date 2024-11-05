@@ -2,7 +2,7 @@ import {View, Text, ScrollView} from "react-native";
 import {useLocalSearchParams} from "expo-router";
 import React from "react";
 import {useFacilityCache} from "@/hooks/useFacilityCache";
-import FacilityDetails from "@/components/FacilityDetails";
+import FacilityDetails from "@/components/facility/FacilityDetails";
 
 const EmployeeDetailsScreen = () => {
     const params = useLocalSearchParams();
@@ -18,7 +18,7 @@ const EmployeeDetailsScreen = () => {
                 </>
             ) : (
                 <View className="flex-1 flex-col items-center justify-center">
-                    <Text className="text-xl text-red-600">Contact details could not be found.</Text>
+                    <Text className="text-xl text-red-600">Facility details could not be found.</Text>
                     <Text className="text-xl text-red-600">Please close and open the app again!</Text>
                 </View>
             )}

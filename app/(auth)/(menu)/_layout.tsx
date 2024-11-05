@@ -1,13 +1,13 @@
-import React, {useEffect} from 'react';
-import {Stack, useNavigation} from "expo-router";
+import {Stack, useNavigation, useRouter} from "expo-router";
 import {Colors} from "@/constants/Colors";
 import {TouchableOpacity} from "react-native";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
-import {useFetchProfileQuery} from "@/hooks/useFetchProfileQuery";
+import {faChevronLeft, faPenToSquare} from "@fortawesome/free-solid-svg-icons";
+import React from "react";
 
 const MenuLayout = () => {
-    let navigation = useNavigation();
+    const navigation = useNavigation();
+    const router  = useRouter();
 
     return (
         <Stack>
@@ -15,7 +15,7 @@ const MenuLayout = () => {
                 name="profile"
                 options={{
                     headerShown: true,
-                    headerTitle: 'Profile',
+                    headerTitle: 'Your Profile',
                     headerTitleStyle: {
                         fontSize: 24,
                         fontWeight: 'semibold',
@@ -26,6 +26,17 @@ const MenuLayout = () => {
                             <FontAwesomeIcon icon={faChevronLeft} size={25} color={Colors.myApp.primary} />
                         </TouchableOpacity>
                     ),
+                    headerRight: () => (
+                        <TouchableOpacity onPress={() => router.push("/(profile)/update")}>
+                            <FontAwesomeIcon icon={faPenToSquare} size={25} color={Colors.myApp.primary} />
+                        </TouchableOpacity>
+                    )
+                }}
+            />
+            <Stack.Screen
+                name="(profile)"
+                options={{
+                    headerShown: false,
                 }}
             />
             <Stack.Screen

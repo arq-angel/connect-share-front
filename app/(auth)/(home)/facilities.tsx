@@ -6,7 +6,7 @@ import {useFetchFacilitiesInfiniteQuery} from "@/hooks/useFetchFacilitiesInfinit
 import TopBar from "@/components/TopBar";
 import SecondTopBar from "@/components/SecondTopBar";
 import {Colors} from "@/constants/Colors";
-import FacilityListItem from "@/components/FacilityListItem";
+import FacilityListItem from "@/components/facility/FacilityListItem";
 
 const Page = () => {
     const queryClient = useQueryClient();

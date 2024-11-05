@@ -1,11 +1,12 @@
-import React, {useEffect} from 'react';
-import {ScrollView, Text, View,} from "react-native";
+import React, {useEffect, useState} from 'react';
+import {View, Text, ScrollView} from "react-native";
 import {useCachedProfileData} from "@/hooks/useCachedProfileData";
 import Toast from "react-native-toast-message";
 import ProfileDetails from "@/components/profile/ProfileDetails";
-import FacilityDetails from "@/components/facility/FacilityDetails";
+import UpdateProfile from "@/components/profile/update/UpdateProfile";
 
 const Page = () => {
+    const [isLoading, setIsLoading] = useState(false);
 
     const {data: profileData, error} = useCachedProfileData();
 
@@ -24,12 +25,14 @@ const Page = () => {
         }
     }, [profileData, error]);
 
+    const handleSubmit = () => {
+        console.log("Update Pressed.")
+    }
+
     return (
         <ScrollView className="flex-1">
             {profileData?.data ? (
-                <>
-                    <ProfileDetails profile={profileData?.data} />
-                </>
+                <UpdateProfile profile={profileData?.data} handleSubmit={handleSubmit} isLoading={isLoading} />
             ) : (
                 <View className="flex-1 flex-col items-center justify-center">
                     <Text className="text-xl text-red-600">Profile details could not be found.</Text>

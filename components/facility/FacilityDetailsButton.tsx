@@ -1,4 +1,3 @@
-import FacilityDetailsButtonReact from 'react';
 import {TouchableOpacity, View, Text} from "react-native";
 import {Colors} from "@/constants/Colors";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";

@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, SafeAreaView, Image} from "react-native";
-import {Colors} from "@/constants/Colors";
+import {View} from "react-native";
 import {useRouter} from "expo-router";
 import {useLogoutMutation} from "@/hooks/useLogoutMutation";
-import {faChevronRight, faUser} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {useFetchProfileQuery} from "@/hooks/useFetchProfileQuery";
 import {useCachedProfileData} from "@/hooks/useCachedProfileData";
+import EmployeeDetailsProfileImage from "@/components/profile/EmployeeDetailsProfileImage";
+import EmployeeDetailsProfileInfo from "@/components/profile/EmployeeDetailsProfileInfo";
+import MenuListItem from "@/components/menu/MenuListItem";
+import LogOutButton from "@/components/menu/LogOutButton";
 
 const Page = () => {
     const router = useRouter();
@@ -35,7 +35,6 @@ const Page = () => {
             setIsLoading(false);
         }
     }, [status, data, router, error])
-
     /** Logout Process end */
 
     /** Fetch Cached Profile Data start */
@@ -43,92 +42,41 @@ const Page = () => {
     /** Fetch Cached Profile Data end */
 
     return (
-        <SafeAreaView className="flex-1 bg-white">
-            <View className="flex-col items-center justify-center">
-                <View className="py-2 relative">
-                    {profileData?.data?.image ? (
-                        <>
-                            <Image
-                                source={{uri: 'https://myapplib.com/' + profileData?.data?.image}}
-                                className="rounded-full"
-                                style={{height: 120, width: 120}}
-                            />
-                        </>
-
-                    ) : (profileData?.data ? (
-                        <View className="bg-gray-300 rounded-full justify-center items-center"
-                              style={{width: 120, height: 120}}>
-                            <Text className="text-4xl">
-                                {profileData?.data?.firstName[0]}{profileData?.data?.lastName[0]}
-                            </Text>
-                        </View>
-                    ) : (
-                        <View className="bg-gray-300 rounded-full justify-center items-center"
-                              style={{width: 120, height: 120}}>
-                            <Text className="text-4xl">
-                                <FontAwesomeIcon icon={faUser} size={50}/>
-                            </Text>
-                        </View>
-                    ))
-                    }
-
-                </View>
-                <View className="mb-3">
-                    {profileData?.data && (
-                        <Text className="font-semibold text-2xl">
-                            {profileData?.data?.firstName ?? ''} {profileData?.data?.middleName ?? ''} {profileData?.data?.lastName ?? ''}
-                        </Text>
-                    )}
-                </View>
-                <View className="flex-row px-6">
-                    <View className="flex-1 flex-col">
-                        <TouchableOpacity
-                            className="flex-row justify-between items-center py-4 border-b border-gray-400"
-                            onPress={() => router.push("/(menu)/profile")}
-                        >
-                            <Text className="text-lg font-semibold">Your Profile</Text>
-                            <FontAwesomeIcon icon={faChevronRight} size={25} color={Colors.myApp.primary}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            className="flex-row justify-between items-center py-4 border-b border-gray-400"
-                            onPress={() => router.push("/(menu)/settings")}
-                        >
-                            <Text className="text-lg font-semibold">Settings</Text>
-                            <FontAwesomeIcon icon={faChevronRight} size={25} color={Colors.myApp.primary}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            className="flex-row justify-between items-center py-4 border-b border-gray-400"
-                            onPress={() => router.push("/(menu)/help")}
-                        >
-                            <Text className="text-lg font-semibold">Help Center</Text>
-                            <FontAwesomeIcon icon={faChevronRight} size={25} color={Colors.myApp.primary}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            className="flex-row justify-between items-center py-4 border-b border-gray-400"
-                            onPress={() => router.push("/(menu)/privacy")}
-                        >
-                            <Text className="text-lg font-semibold">Privacy Policy</Text>
-                            <FontAwesomeIcon icon={faChevronRight} size={25} color={Colors.myApp.primary}/>
-                        </TouchableOpacity>
-                        <View className="flex-col w-full mt-4">
-                            <TouchableOpacity
-                                onPress={handleSubmit}
-                                className={`p-1 flex items-center justify-center rounded-lg`}
-                                style={{
-                                    backgroundColor: isLoading ? Colors.myApp.primaryMuted : Colors.myApp.primary,
-                                    borderWidth: 3,
-                                    borderColor: isLoading ? Colors.myApp.primaryMuted : Colors.myApp.primary,
-                                }}
-                                disabled={isLoading}
-                            >
-                                <Text
-                                    className="font-regular text-white text-2xl">{isLoading ? 'Logging out...' : 'Log Out'}</Text>
-                            </TouchableOpacity>
-                        </View>
+        <View className="flex-1 flex-col">
+            <View className="flex-row">
+                <View className="flex-1">
+                    <View className="flex-col justify-center items-center p-3">
+                        <EmployeeDetailsProfileImage employee={profileData?.data}/>
                     </View>
                 </View>
             </View>
-        </SafeAreaView>
+            <View className="flex-row">
+                <View className="flex-1">
+                    <View className="flex-col justify-center items-center pb-3">
+                        <EmployeeDetailsProfileInfo employee={profileData?.data}/>
+                    </View>
+                </View>
+            </View>
+
+            <View className="flex-row bg-white">
+                <View className="flex-1">
+                    <View className="flex-col p-3">
+                        <MenuListItem route="/(menu)/profile" title="Your Profile"/>
+                        <MenuListItem route="/(menu)/settings" title="Settings"/>
+                        <MenuListItem route="/(menu)/help" title="Help Center"/>
+                        <MenuListItem route="/(menu)/privacy" title="Privacy Policy"/>
+                    </View>
+                </View>
+            </View>
+
+            <View className="flex-row bg-white">
+                <View className="flex-1">
+                    <View className="flex-col p-3 h-full">
+                        <LogOutButton isLoading={isLoading} handleSubmit={handleSubmit}/>
+                    </View>
+                </View>
+            </View>
+        </View>
     );
 };
 

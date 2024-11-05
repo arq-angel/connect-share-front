@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import {Image, Text, View} from "react-native";
 
-const FacilityDetailsProfileImage = ({facility}) => {
+const EmployeeDetailsProfileImage = ({employee}) => {
     const [imageError, setImageError] = useState(false);
 
     return (
         <>
-            {facility?.image && !imageError ? (
+            {employee?.image && !imageError ? (
                 <Image
-                    source={{uri: 'https://myapplib.com/' + facility?.image}}
+                    source={{uri: 'https://myapplib.com/' + employee?.image}}
                     className="rounded-full"
                     style={{height: 120, width: 120}}
                     onError={() => setImageError(true)}
@@ -17,7 +17,7 @@ const FacilityDetailsProfileImage = ({facility}) => {
                 <View className="bg-gray-300 rounded-full justify-center items-center"
                       style={{width: 120, height: 120}}>
                     <Text className="text-4xl">
-                        {facility?.name[0]}{facility?.name[1]}
+                        {employee?.firstName[0]}{employee?.lastName[1]}
                     </Text>
                 </View>
             )
@@ -26,4 +26,4 @@ const FacilityDetailsProfileImage = ({facility}) => {
     );
 };
 
-export default FacilityDetailsProfileImage;
+export default EmployeeDetailsProfileImage;

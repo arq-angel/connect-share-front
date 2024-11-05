@@ -1,7 +1,7 @@
 import {View, Text, ScrollView} from "react-native";
 import {useLocalSearchParams} from "expo-router";
 import {useEmployeeCache} from "@/hooks/useEmployeeCache";
-import ContactDetails from "@/components/ContactDetails";
+import ContactDetails from "@/components/contact/ContactDetails";
 import React from "react";
 
 const EmployeeDetailsScreen = () => {

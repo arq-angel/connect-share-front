@@ -1,10 +1,10 @@
 import React from 'react';
 import {View} from "react-native";
 import {faPhone, faEnvelope, faMessage, faStar} from "@fortawesome/free-solid-svg-icons";
-import ContactDetailsButton from "@/components/ContactDetailsButton";
-import ContactDetailsDescription from "@/components/ContactDetailsDescription";
-import ContactDetailsProfileImage from "@/components/ContactDetailsProfileImage";
-import ContactDetailsProfileInfo from "@/components/ContactDetailsProfileInfo";
+import ContactDetailsButton from "@/components/contact/ContactDetailsButton";
+import ContactDetailsDescription from "@/components/contact/ContactDetailsDescription";
+import ContactDetailsProfileImage from "@/components/contact/ContactDetailsProfileImage";
+import ContactDetailsProfileInfo from "@/components/contact/ContactDetailsProfileInfo";
 
 const ContactDetails = ({employee}) => {
     return (

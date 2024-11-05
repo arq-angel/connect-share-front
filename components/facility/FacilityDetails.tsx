@@ -1,10 +1,10 @@
 import React from 'react';
 import {View} from "react-native";
 import {faEnvelope, faMap, faPhone, faProjectDiagram} from "@fortawesome/free-solid-svg-icons";
-import FacilityDetailsProfileImage from "@/components/FacilityDetailsProfileImage";
-import FacilityDetailsProfileInfo from "@/components/FacilityDetailsProfileInfo";
-import FacilityDetailsButton from "@/components/FacilityDetailsButton";
-import FacilityDetailsDescription from "@/components/FacilityDetailsDescription";
+import FacilityDetailsProfileImage from "@/components/facility/FacilityDetailsProfileImage";
+import FacilityDetailsProfileInfo from "@/components/facility/FacilityDetailsProfileInfo";
+import FacilityDetailsButton from "@/components/facility/FacilityDetailsButton";
+import FacilityDetailsDescription from "@/components/facility/FacilityDetailsDescription";
 
 const FacilityDetails = ({facility}) => {
     return (

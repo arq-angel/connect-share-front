@@ -13,7 +13,7 @@ import {useDebounce} from "@/helpers/appHelpers";
 import TopBar from "@/components/TopBar";
 import SecondTopBar from "@/components/SecondTopBar";
 import {Colors} from "@/constants/Colors";
-import ContactListItem from "@/components/ContactListItem";
+import ContactListItem from "@/components/contact/ContactListItem";
 
 const Page = () => {
     const queryClient = useQueryClient();

@@ -1,9 +1,9 @@
 import {TouchableOpacity, View} from "react-native";
-import ContactListItemProfileImage from "@/components/ContactListItemProfileImage";
-import ContactListItemProfileData from "@/components/ContactListItemProfileData";
 import {useRouter} from "expo-router";
+import FacilityListItemProfileImage from "@/components/facility/FacilityListItemProfileImage";
+import FacilityListItemProfileData from "@/components/facility/FacilityListItemProfileData";
 
-const ContactListItem = ({item}) => {
+const FacilityListItem = ({item}) => {
     const itemId = item?.id;
     const router = useRouter();
 
@@ -11,17 +11,17 @@ const ContactListItem = ({item}) => {
         <TouchableOpacity
             onPress={() => {
                 console.log("Item Pressed with Id.", itemId);
-                console.log("Redirecting to the employeeDetails...")
-                router.push(`/(auth)/employeeDetails/${itemId}`);
+                console.log("Redirecting to the facilityDetails...")
+                router.push(`/(auth)/facilityDetails/${itemId}`);
             }}
         >
             <View className="mb-3 border-2 border-gray-300 rounded-full p-2 mx-3">
                 <View className="flex-row justify-center items-center">
                     <View className="rounded-full">
-                        <ContactListItemProfileImage item={item}/>
+                        <FacilityListItemProfileImage item={item}/>
                     </View>
                     <View className="flex-1 h-full rounded-e-full px-3 py-0">
-                        <ContactListItemProfileData item={item}/>
+                        <FacilityListItemProfileData item={item}/>
                     </View>
                 </View>
             </View>
@@ -29,4 +29,4 @@ const ContactListItem = ({item}) => {
     );
 };
 
-export default ContactListItem;
+export default FacilityListItem;
