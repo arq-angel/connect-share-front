@@ -94,66 +94,71 @@ const Page = () => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={{flex: 1}}
         >
-            <View className="flex-1 justify-start items-start bg-white">
-                {/* Top Bar Start */}
-                <TopBar searchTerm="facilities..." searchQuery={searchQuery} handleTextChange={handleTextChange} showFilter={true}/>
-                {/* Top Bar End */}
+            <View className="flex-1 bg-white">
+                <View className="flex-col">
 
-                {/* Second Top Bar Start */}
-                <SecondTopBar
-                    handleManualFetch={handleManualFailitiesFetch}
-                    isRefreshing={(isLoading || isFetching) && !isFetchingNextPage}
-                    isFetchingNextPage={isFetchingNextPage}
-                    startId={startId}
-                    endId={endId}
-                    totalItems={totalItems}
-                />
-                {/* Second Top Bar End */}
+                    {/* Top Bar Start */}
+                    <TopBar searchTerm="facilities..." searchQuery={searchQuery} handleTextChange={handleTextChange}
+                            showFilter={true}/>
+                    {/* Top Bar End */}
 
-                {/* FlatList View Start */}
-                <View className="flex-row mt-1">
-                    <View className="flex-1">
-                        {(status === 'pending' || isLoading) && (
-                            <View className="flex justify-center items-center mt-3">
-                                <ActivityIndicator size="large" color={Colors.myApp.primary}/>
-                            </View>
-                        )}
+                    {/* Second Top Bar Start */}
+                    <SecondTopBar
+                        handleManualFetch={handleManualFailitiesFetch}
+                        isRefreshing={(isLoading || isFetching) && !isFetchingNextPage}
+                        isFetchingNextPage={isFetchingNextPage}
+                        startId={startId}
+                        endId={endId}
+                        totalItems={totalItems}
+                    />
+                    {/* Second Top Bar End */}
 
-                        {status === 'error' && (
-                            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                                <Text style={{color: 'red'}}>Error: {error?.message || 'Something went wrong'}</Text>
-                            </View>
-                        )}
+                    {/* FlatList View Start */}
+                    <View className="flex-row mt-1">
+                        <View className="flex-1">
+                            {(status === 'pending' || isLoading) && (
+                                <View className="flex justify-center items-center mt-3">
+                                    <ActivityIndicator size="large" color={Colors.myApp.primary}/>
+                                </View>
+                            )}
 
-                        {!isLoading && allFacilities.length > 0 && (
-                            <FlatList
-                                data={allFacilities}
-                                renderItem={({item}) =>
-                                    (
-                                        <FacilityListItem item={item}/>
-                                    )
-                                }
-                                keyExtractor={(item, index) => index.toString()}
-                                onEndReached={() => {
-                                    console.log("End reached...")
-                                    if (hasNextPage && !isFetchingNextPage && !isFetching) {
-                                        console.log("Fetching next page...")
-                                        fetchNextPage();
+                            {status === 'error' && (
+                                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                                    <Text
+                                        style={{color: 'red'}}>Error: {error?.message || 'Something went wrong'}</Text>
+                                </View>
+                            )}
+
+                            {!isLoading && allFacilities.length > 0 && (
+                                <FlatList
+                                    data={allFacilities}
+                                    renderItem={({item}) =>
+                                        (
+                                            <FacilityListItem item={item}/>
+                                        )
                                     }
-                                }}
-                                onEndReachedThreshold={0.5} // Trigger when within 10% of the bottom
-                                ListFooterComponent={() =>
-                                    isFetchingNextPage ? (
-                                        <ActivityIndicator size="large" color={Colors.myApp.primary}/>
-                                    ) : null
-                                }
-                                contentContainerStyle={{minHeight: '100%', paddingBottom: 90}}
-                                onViewableItemsChanged={onViewableItemsChanged}
-                                viewabilityConfig={viewabilityConfig}
-                            />
-                        )}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    onEndReached={() => {
+                                        console.log("End reached...")
+                                        if (hasNextPage && !isFetchingNextPage && !isFetching) {
+                                            console.log("Fetching next page...")
+                                            fetchNextPage();
+                                        }
+                                    }}
+                                    onEndReachedThreshold={0.5} // Trigger when within 10% of the bottom
+                                    ListFooterComponent={() =>
+                                        isFetchingNextPage ? (
+                                            <ActivityIndicator size="large" color={Colors.myApp.primary}/>
+                                        ) : null
+                                    }
+                                    contentContainerStyle={{minHeight: '100%', paddingBottom: 90}}
+                                    onViewableItemsChanged={onViewableItemsChanged}
+                                    viewabilityConfig={viewabilityConfig}
+                                />
+                            )}
+                        </View>
+                        {/* FlatList View End */}
                     </View>
-                    {/* FlatList View End */}
                 </View>
             </View>
         </KeyboardAvoidingView>

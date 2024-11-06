@@ -9,15 +9,6 @@ const orgChartDetails = () => {
     const params = useLocalSearchParams();
     const facilityId = params.id;
 
-    // const {status, data, error, isLoading, isFetching, fetch} = useFetchFacilityOrgChart(facilityId);
-    //
-    // useEffect(() => {
-    //     if (data) {
-    //         setFacilityOrgChart(data)
-    //         console.log("Data", data)
-    //     }
-    // }, [data]);
-
     // For debug purposes - haven't setup backend endpoint yet
     const facilityOrgChart = useFetchFacilityOrgChart(facilityId);
 

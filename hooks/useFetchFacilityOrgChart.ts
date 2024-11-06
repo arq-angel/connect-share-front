@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {getOrgChartFromAPI} from "@/apis/remote/orgChartAPI";
 
-export const useFetchFacilityOrgChart = (facilityId) => {
+export const useFetchFacilityOrgChart = (facilityId = null) => {
 
     const {data, error, isFetching, status, refetch, isLoading} = useQuery({
         queryKey: ["orgChart", facilityId],
