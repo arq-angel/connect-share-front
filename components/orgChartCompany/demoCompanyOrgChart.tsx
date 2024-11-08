@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text, Image, TouchableOpacity, FlatList, Linking} from 'react-native';
 import 'nativewind';
-import OrgChartItem from "@/components/orgChart/OrgChartItem";
+import OrgChartItem from "@/components/orgChartCompany/OrgChartItem";
 
 const CompanyInfo = ({company}) => {
     return (

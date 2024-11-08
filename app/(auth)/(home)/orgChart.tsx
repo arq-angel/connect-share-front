@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, ScrollView, ActivityIndicator} from "react-native";
+import {View, Text, ActivityIndicator} from "react-native";
 import {useFetchFacilityOrgChart} from "@/hooks/useFetchFacilityOrgChart";
 import {Colors} from "@/constants/Colors";
-import OrgChartScreen from "@/components/orgChart/demoCompanyOrgChart";
+import OrgChartScreen from "@/components/orgChartCompany/demoCompanyOrgChart";
 
 const Page = () => {
     const [companyOrgChart, setCompanyOrgChart] = useState([]);

@@ -1,7 +1,7 @@
 import {TouchableOpacity, View} from "react-native";
-import OrgChartItem from "@/components/orgChart/OrgChartItem";
-import OrgChartItemProfileImage from "@/components/orgChart/OrgChartItemProfileImage";
-import OrgChartItemProfileData from "@/components/orgChart/OrgChartItemProfileData";
+import OrgChartItem from "@/components/orgChartCompany/OrgChartItem";
+import OrgChartItemProfileImage from "@/components/orgChartCompany/OrgChartItemProfileImage";
+import OrgChartItemProfileData from "@/components/orgChartCompany/OrgChartItemProfileData";
 
 const CompanyOrgChart = ({companyOrgChart}) => {
     const company = companyOrgChart?.company;

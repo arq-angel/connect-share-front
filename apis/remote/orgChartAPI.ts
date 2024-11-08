@@ -18,7 +18,7 @@ export const getOrgChartFromAPI = async (facilityId = null, refreshCache = false
             : `${orgChartUrl}?refreshCache=${refreshCache}`;
     }
 
-    // console.log("New url:", orgChartUrl);
+    console.log("New url:", orgChartUrl);
 
     return getRequest(orgChartUrl)
         .then((response) => {
